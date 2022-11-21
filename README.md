@@ -1,4 +1,4 @@
-<pre>
+```
 #ifndef fps_io_plugins_relative_dynamics_hh
 #define fps_io_plugins_relative_dynamics_hh
 
@@ -28,4 +28,4 @@ static void fps_io_plugins_relative_dynamics_connect_port(LV2_Handle instance, u
 }
 
 #endif // fps_io_plugins_relative_dynamics_hh
-</pre>
+```
