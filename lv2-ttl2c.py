@@ -49,49 +49,55 @@ enum {basename}_port_indices {{\
     f.write(f"""\
 }};
 
-struct {basename}_callbacks 
-{{
-    LV2_Handle(*instantiate )(const struct LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
-    void(*connect_port )(LV2_Handle instance, uint32_t port, void *data_location);
-    void(*activate )(LV2_Handle instance);
-    void(*run )(LV2_Handle instance, uint32_t sample_count);
-    void(*deactivate )(LV2_Handle instance);
-    void(*cleanup )(LV2_Handle instance);
-    const void *(*extension_data )(const char *uri);
-}};
 
-static void {basename}_connect_port(LV2_Handle instance, uint32_t port, void *data_location)
+
+// LV2_Handle(*instantiate_cb)(const struct LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
+void (*{basename}_connect_port_cb)(LV2_Handle instance, uint32_t port, void *data_location) = NULL;
+// void(*activate_cb)(LV2_Handle instance);
+// void(*run_cb)(LV2_Handle instance, uint32_t sample_count);
+// void(*deactivate_cb)(LV2_Handle instance);
+// void(*cleanup_cb)(LV2_Handle instance);
+// const void *(*extension_data_cb)(const char *uri);
+
+static void {basename}_connect_port_desc(LV2_Handle instance, uint32_t port, void *data_location)
 {{
-    if (port < {plugin.get_num_ports()}) {{
-        ((struct {basename}*)instance)->ports[port] = (float*)data_location;
+    if ({basename}_connect_port_cb) 
+    {{ 
+        {basename}_connect_port_cb(instance, port, data_location); 
+    }} 
+    else 
+    {{
+        if (port < {plugin.get_num_ports()}) {{
+            ((struct {basename}*)instance)->ports[port] = (float*)data_location;
+        }}
     }}
 }}
 
-static LV2_Handle {basename}_instantiate(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
+static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
 {{
     struct {basename} *instance = malloc(sizeof(struct {basename}));
     return (LV2_Handle)(instance);
 }}
 
-static void {basename}_cleanup(LV2_Handle instance)
+static void {basename}_cleanup_desc(LV2_Handle instance)
 {{
     struct {basename} *tinstance = (struct {basename}*)instance;
     free(tinstance);
 }}
 
-static void {basename}_activate(LV2_Handle instance)
+static void {basename}_activate_desc(LV2_Handle instance)
 {{
 }}
 
-static void {basename}_deactivate(LV2_Handle instance)
+static void {basename}_deactivate_desc(LV2_Handle instance)
 {{
 }}
 
-static void {basename}_run(LV2_Handle instance, uint32_t sample_count)
+static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count)
 {{
 }}
 
-static const void *{basename}_extension_data(const char *uri)
+static const void *{basename}_extension_data_desc(const char *uri)
 {{
 }}
 
@@ -100,13 +106,13 @@ static const void *{basename}_extension_data(const char *uri)
 static LV2_Descriptor {basename}_descriptor = 
 {{
     "{plugin.get_uri()}",
-    {basename}_instantiate,
-    {basename}_connect_port,
-    {basename}_activate,
-    {basename}_run,
-    {basename}_deactivate,
-    {basename}_cleanup,
-    {basename}_extension_data
+    {basename}_instantiate_desc,
+    {basename}_connect_port_desc,
+    {basename}_activate_desc,
+    {basename}_run_desc,
+    {basename}_deactivate_desc,
+    {basename}_cleanup_desc,
+    {basename}_extension_data_desc
 }};
 
 
