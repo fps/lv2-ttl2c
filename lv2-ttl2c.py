@@ -25,6 +25,21 @@ w.load_bundle(bundle_file_uri)
 
 for plugin in w.get_all_plugins():
     basename = str(plugin.get_uri()).split("://")[1].replace(":","_").replace("/","_").replace("-","_").replace(".","_")    
+    f = open(os.path.join(args.output_directory, f'{basename}_callbacks.h'), 'w')
+    f.write(f"""\
+
+struct {basename}_callbacks_t
+{{
+    LV2_Handle(*instantiate)(const struct LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
+    void (*connect_port)(LV2_Handle instance, uint32_t port, void *data_location);
+    void(*activate)(LV2_Handle instance);
+    void(*run)(LV2_Handle instance, uint32_t sample_count);
+    void(*deactivate)(LV2_Handle instance);
+    void(*cleanup)(LV2_Handle instance);
+    const void *(*extension_data)(const char *uri);
+}};\
+    """)
+
     f = open(os.path.join(args.output_directory, f'{basename}.h'), 'w')
     f.write(f"""\
 #ifndef {basename}_hh
@@ -49,21 +64,11 @@ enum {basename}_port_indices {{\
     f.write(f"""\
 }};
 
-
-
-// LV2_Handle(*instantiate_cb)(const struct LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
-void (*{basename}_connect_port_cb)(LV2_Handle instance, uint32_t port, void *data_location) = NULL;
-// void(*activate_cb)(LV2_Handle instance);
-// void(*run_cb)(LV2_Handle instance, uint32_t sample_count);
-// void(*deactivate_cb)(LV2_Handle instance);
-// void(*cleanup_cb)(LV2_Handle instance);
-// const void *(*extension_data_cb)(const char *uri);
-
 static void {basename}_connect_port_desc(LV2_Handle instance, uint32_t port, void *data_location)
 {{
-    if ({basename}_connect_port_cb) 
+    if ({basename}_callbacks.connect_port) 
     {{ 
-        {basename}_connect_port_cb(instance, port, data_location); 
+        {basename}_callbacks.connect_port(instance, port, data_location); 
     }} 
     else 
     {{
@@ -114,6 +119,12 @@ static LV2_Descriptor {basename}_descriptor =
     {basename}_cleanup_desc,
     {basename}_extension_data_desc
 }};
+
+LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor (uint32_t index)
+{{
+    if (0 == index) return &{basename}_descriptor;
+    else return NULL;
+}}
 
 
 #endif // {basename}_hh\
