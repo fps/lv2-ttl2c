@@ -33,7 +33,13 @@ struct {basename}_callbacks_t
     LV2_Handle(*instantiate)(const struct LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
     void (*connect_port)(LV2_Handle instance, uint32_t port, void *data_location);
     void(*activate)(LV2_Handle instance);
-    void(*run)(LV2_Handle instance, uint32_t sample_count);
+    void(*run)(LV2_Handle instance, uint32_t sample_count""")
+
+    for index in range(plugin.get_num_ports()):
+        port = plugin.get_port_by_index(index)
+        f.write(f", float *{port.get_symbol()}")
+
+    f.write(f""");
     void(*deactivate)(LV2_Handle instance);
     void(*cleanup)(LV2_Handle instance);
     const void *(*extension_data)(const char *uri);
@@ -72,7 +78,8 @@ static void {basename}_connect_port_desc(LV2_Handle instance, uint32_t port, voi
     }} 
     else 
     {{
-        if (port < {plugin.get_num_ports()}) {{
+        if (port < {plugin.get_num_ports()}) 
+        {{
             ((struct {basename}*)instance)->ports[port] = (float*)data_location;
         }}
     }}
@@ -81,6 +88,10 @@ static void {basename}_connect_port_desc(LV2_Handle instance, uint32_t port, voi
 static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
 {{
     struct {basename} *instance = malloc(sizeof(struct {basename}));
+    if ({basename}_callbacks.instantiate)
+    {{
+
+    }}
     return (LV2_Handle)(instance);
 }}
 
@@ -100,6 +111,17 @@ static void {basename}_deactivate_desc(LV2_Handle instance)
 
 static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count)
 {{
+    struct {basename} *tinstance = (struct {basename}*)instance;
+
+    if ({basename}_callbacks.run)
+    {{
+        {basename}_callbacks.run(instance, sample_count""")
+    for index in range(plugin.get_num_ports()):
+        port = plugin.get_port_by_index(index)
+        f.write(f', tinstance->ports[{index}]')
+
+    f.write(f""");\
+    }}
 }}
 
 static const void *{basename}_extension_data_desc(const char *uri)
