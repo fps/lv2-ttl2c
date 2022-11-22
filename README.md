@@ -1,3 +1,7 @@
+This repository contains a little python script to make writing an LV2 plugin a little less repetitive/painful.
+
+You write the turle (ttl) files describing the plugins in your bundle and the python script then generates some useful <code>#include</code>s for you. Below you see the code that's necessary to write when running the script on the amp-plugin example from the lv2 distribution (included here for reference and testing in the <code>lv2/</code> directory)
+
 ```
 include <lv2.h>
 #include <stdio.h>
