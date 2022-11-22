@@ -27,23 +27,32 @@ for plugin in w.get_all_plugins():
     basename = str(plugin.get_uri()).split("://")[1].replace(":","_").replace("/","_").replace("-","_").replace(".","_")    
     f = open(os.path.join(args.output_directory, f'{basename}_callbacks.h'), 'w')
     f.write(f"""\
+#ifndef {basename}_cb_hh
+#define {basename}_cb_hh
+ 
+struct {basename} {{
+    struct {basename}_state *state;
+    float *ports[{plugin.get_num_ports()}];
+}};
 
 struct {basename}_callbacks_t
 {{
-    LV2_Handle(*instantiate)(const struct LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
-    void (*connect_port)(LV2_Handle instance, uint32_t port, void *data_location);
-    void(*activate)(LV2_Handle instance);
-    void(*run)(LV2_Handle instance, uint32_t sample_count""")
+    LV2_Handle(*instantiate)(const struct {basename} *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
+    void (*connect_port)(struct {basename} *instance, uint32_t port, void *data_location);
+    void(*activate)(struct {basename} *instance);
+    void(*run)(struct {basename} *instance, uint32_t sample_count""")
 
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
         f.write(f", float *{port.get_symbol()}")
 
     f.write(f""");
-    void(*deactivate)(LV2_Handle instance);
-    void(*cleanup)(LV2_Handle instance);
+    void(*deactivate)(struct {basename} *instance);
+    void(*cleanup)(struct {basename} *instance);
     const void *(*extension_data)(const char *uri);
-}};\
+}};
+
+#endif\
     """)
 
     f = open(os.path.join(args.output_directory, f'{basename}.h'), 'w')
@@ -55,11 +64,6 @@ struct {basename}_callbacks_t
 #include <lv2.h>
 #include <stdlib.h>
     
-struct {basename} {{
-    struct {basename}_state *state;
-    float *ports[{plugin.get_num_ports()}];
-}};
-
 enum {basename}_port_indices {{\
     """)
 
@@ -90,7 +94,7 @@ static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, 
     struct {basename} *instance = malloc(sizeof(struct {basename}));
     if ({basename}_callbacks.instantiate)
     {{
-
+        {basename}_callbacks.instantiate(instance, sample_rate, bundle_path, features);
     }}
     return (LV2_Handle)(instance);
 }}
@@ -98,15 +102,29 @@ static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, 
 static void {basename}_cleanup_desc(LV2_Handle instance)
 {{
     struct {basename} *tinstance = (struct {basename}*)instance;
+
+    if ({basename}_callbacks.cleanup)
+    {{
+        {basename}_callbacks.cleanup(tinstance);
+    }}
+
     free(tinstance);
 }}
 
 static void {basename}_activate_desc(LV2_Handle instance)
 {{
+    if ({basename}_callbacks.activate)
+    {{
+        {basename}_callbacks.activate(instance);
+    }}
 }}
 
 static void {basename}_deactivate_desc(LV2_Handle instance)
 {{
+    if ({basename}_callbacks.deactivate)
+    {{
+        {basename}_callbacks.deactivate(instance);
+    }}
 }}
 
 static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count)
@@ -115,7 +133,7 @@ static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count)
 
     if ({basename}_callbacks.run)
     {{
-        {basename}_callbacks.run(instance, sample_count""")
+        {basename}_callbacks.run(tinstance, sample_count""")
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
         f.write(f', tinstance->ports[{index}]')
@@ -126,7 +144,14 @@ static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count)
 
 static const void *{basename}_extension_data_desc(const char *uri)
 {{
-    return 0;
+    if ({basename}_callbacks.extension_data)
+    {{
+        return {basename}_callbacks.extension_data(uri);
+    }} 
+    else 
+    {{
+        return 0;
+    }}
 }}
 
 

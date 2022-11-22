@@ -12,7 +12,7 @@
     Then we implement those callbacks that we want. Note that the ports
     have been translated from indices to named arguments:
 */
-void run(LV2_Handle instance, uint32_t nframes, float *gain, float *in, float *out)
+void run(struct lv2plug_in_plugins_eg_amp *instance, uint32_t nframes, float *gain, float *in, float *out)
 {
     for (uint32_t frame = 0; frame < nframes; ++frame)
     {
