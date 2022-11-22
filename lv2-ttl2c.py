@@ -104,6 +104,7 @@ static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count)
 
 static const void *{basename}_extension_data_desc(const char *uri)
 {{
+    return 0;
 }}
 
 
