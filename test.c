@@ -14,7 +14,10 @@
 */
 void run(LV2_Handle instance, uint32_t nframes, float *gain, float *in, float *out)
 {
-    printf("hello from run()\n");
+    for (uint32_t frame = 0; frame < nframes; ++frame)
+    {
+        out[frame] = gain[0] * in[frame];
+    }
 }
 
 /*
