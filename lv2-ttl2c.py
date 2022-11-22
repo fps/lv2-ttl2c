@@ -63,9 +63,10 @@ struct {basename}_callbacks_t
   
 #include <lv2.h>
 #include <stdlib.h>
+#include <string.h>
     
-enum {basename}_port_indices {{\
-    """)
+enum {basename}_port_indices {{
+""")
 
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
@@ -92,6 +93,7 @@ static void {basename}_connect_port_desc(LV2_Handle instance, uint32_t port, voi
 static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
 {{
     struct {basename} *instance = malloc(sizeof(struct {basename}));
+    memset(instance, 0,  sizeof(struct {basename}));
     if ({basename}_callbacks.instantiate)
     {{
         {basename}_callbacks.instantiate(instance, sample_rate, bundle_path, features);
@@ -138,7 +140,7 @@ static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count)
         port = plugin.get_port_by_index(index)
         f.write(f', tinstance->ports[{index}]')
 
-    f.write(f""");\
+    f.write(f""");
     }}
 }}
 
@@ -170,8 +172,14 @@ static LV2_Descriptor {basename}_descriptor =
 
 LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor (uint32_t index)
 {{
-    if (0 == index) return &{basename}_descriptor;
-    else return NULL;
+    if (0 == index) 
+    {{
+          return &{basename}_descriptor;
+    }}
+    else 
+    {{ 
+          return NULL;
+    }}
 }}
 
 
