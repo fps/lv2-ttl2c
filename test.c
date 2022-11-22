@@ -1,5 +1,4 @@
-```
-include <lv2.h>
+#include <lv2.h>
 #include <stdio.h>
 #include <stdint.h>
 
@@ -21,7 +20,7 @@ void run(LV2_Handle instance, uint32_t nframes, float *gain, float *in, float *o
 /*
     And put them in a special variable of the callbacks struct type:
 */
-struct lv2plug_in_plugins_eg_amp_callbacks_t lv2plug_in_plugins_eg_amp_callbacks =
+struct lv2plug_in_plugins_eg_amp_callbacks_t lv2plug_in_plugins_eg_amp_callbacks = 
 {
     NULL,
     NULL,
@@ -37,4 +36,3 @@ struct lv2plug_in_plugins_eg_amp_callbacks_t lv2plug_in_plugins_eg_amp_callbacks
 */
 #include "lv2plug_in_plugins_eg_amp.h"
 
-```
