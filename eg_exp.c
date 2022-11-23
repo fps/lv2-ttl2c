@@ -4,28 +4,28 @@
 #include <string.h>
 
 // This is our state. The name of the type is struct basename_state (the generated files assume this precise name):
-struct eg_exp_state 
+struct plugin_state 
 {
     float s;
     float sampling_interval;
 };
 
-// The instantiate callback already gets a struct eg_exp *instance pointer instead of an LV2_Handle
+// The instantiate callback already gets a struct plugin *instance pointer instead of an LV2_Handle
 // and only needs to perform additional initialisation.
-struct eg_exp* instantiate(struct eg_exp *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
+struct plugin* instantiate(struct plugin *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
 {
-    instance->state = malloc(sizeof(struct eg_exp_state));
-    memset(instance->state, 0, sizeof(struct eg_exp_state));
+    instance->state = malloc(sizeof(struct plugin_state));
+    memset(instance->state, 0, sizeof(struct plugin_state));
     instance->state->sampling_interval = 1.0f / sample_rate;
     return instance;
 }
 
 // And similarly the cleanup callback only needs to care about the additional deinitialisation (inverse of instantiate).
-void cleanup(struct eg_exp *instance) {
+void cleanup(struct plugin *instance) {
     free(instance->state);
 }
 
-void run(struct eg_exp *instance, uint32_t nframes, struct eg_exp_port_t1 t1, struct eg_exp_port_in in, struct eg_exp_port_out out)
+void run(struct plugin *instance, uint32_t nframes, struct plugin_port_t1 t1, struct plugin_port_in in, struct plugin_port_out out)
 {
     const float a = 1.0f - expf(-instance->state->sampling_interval/t1.data[0]);
     for (uint32_t frame = 0; frame < nframes; ++frame)
@@ -35,7 +35,7 @@ void run(struct eg_exp *instance, uint32_t nframes, struct eg_exp_port_t1 t1, st
     }
 }
 
-const struct eg_exp_callbacks eg_exp_callbacks = 
+const struct plugin_callbacks plugin_callbacks = 
 {
     .run = run,
     .instantiate = instantiate,
