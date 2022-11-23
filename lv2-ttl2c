@@ -13,6 +13,7 @@ argparser = argparse.ArgumentParser(
 
 argparser.add_argument('-b', '--bundle', default='.', help='the bundle directory to analyze')
 argparser.add_argument('-o', '--output-directory', default='.', help='the output directory')
+argparser.add_argument('-p', '--prefix', default='ttl2c_', help='the prefix added to output filenames')
 
 args = argparser.parse_args()
 
@@ -25,7 +26,7 @@ w.load_bundle(bundle_file_uri)
 
 for plugin in w.get_all_plugins():
     basename = str(plugin.get_uri()).split("://")[1].split("/")[-1].replace("-","_").replace(".","_")    
-    f = open(os.path.join(args.output_directory, f'ttl2c_{basename}.h'), 'w')
+    f = open(os.path.join(args.output_directory, f'{args.prefix}{basename}.h'), 'w')
     f.write(f"""\
 #ifndef {basename}_cb_hh
 #define {basename}_cb_hh
@@ -60,7 +61,7 @@ struct {basename}_callbacks
 #endif\
     """)
 
-    f = open(os.path.join(args.output_directory, f'ttl2c_{basename}.c'), 'w')
+    f = open(os.path.join(args.output_directory, f'{args.prefix}{basename}.c'), 'w')
     f.write(f"""\
 #ifndef {basename}_hh
 #define {basename}_hh

@@ -3,7 +3,7 @@
 This repository contains a little python script to make writing an LV2 plugin a little less repetitive/painful.
 
 <pre>
-usage: lv2-ttl2c.py [-h] [-b BUNDLE] [-o OUTPUT_DIRECTORY]
+usage: lv2-ttl2c.py [-h] [-b BUNDLE] [-o OUTPUT_DIRECTORY] [-p PREFIX]
 
 Generate useful C code from a LV2 plugin bundle's metadata
 
@@ -13,6 +13,8 @@ optional arguments:
                         the bundle directory to analyze
   -o OUTPUT_DIRECTORY, --output-directory OUTPUT_DIRECTORY
                         the output directory
+  -p PREFIX, --prefix PREFIX
+                        the prefix added to output filenames
 </pre>
 
 You write the turle (ttl) files describing the plugins in your bundle and the python script then generates some useful <code>#include</code>s for you. Below you see the code that's necessary to write when running the script on the amp-plugin example from the lv2 distribution (included here for reference and testing in the <code>lv2/</code> directory)
