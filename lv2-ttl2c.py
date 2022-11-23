@@ -40,7 +40,7 @@ struct {basename} {{
     float *ports[{plugin.get_num_ports()}];
 }};
 
-struct {basename}_callbacks_t
+struct {basename}_callbacks
 {{
     struct {basename}* (*instantiate)(struct {basename} *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
     void (*connect_port)(struct {basename} *instance, uint32_t port, void *data_location);

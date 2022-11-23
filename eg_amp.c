@@ -11,7 +11,7 @@ void run(struct eg_amp *instance, uint32_t nframes, float *gain, float *in, floa
 }
 
 // We want run() to be run ;)
-struct eg_amp_callbacks_t eg_amp_callbacks = 
+struct eg_amp_callbacks eg_amp_callbacks = 
 {
     .run = run
 };

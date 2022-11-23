@@ -35,7 +35,7 @@ void run(struct eg_exp *instance, uint32_t nframes, float *t1, float *in, float 
     }
 }
 
-struct eg_exp_callbacks_t eg_exp_callbacks = 
+const struct eg_exp_callbacks eg_exp_callbacks = 
 {
     .run = run,
     .instantiate = instantiate,
