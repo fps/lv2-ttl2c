@@ -33,6 +33,8 @@ for plugin in w.get_all_plugins():
 #include <lv2.h>
 #include <stdint.h>
  
+struct {basename}_state;
+
 struct {basename} {{
     struct {basename}_state *state;
     float *ports[{plugin.get_num_ports()}];
@@ -40,7 +42,7 @@ struct {basename} {{
 
 struct {basename}_callbacks_t
 {{
-    LV2_Handle(*instantiate)(const struct {basename} *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
+    LV2_Handle(*instantiate)(struct {basename} *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
     void (*connect_port)(struct {basename} *instance, uint32_t port, void *data_location);
     void(*activate)(struct {basename} *instance);
     void(*run)(struct {basename} *instance, uint32_t sample_count""")
