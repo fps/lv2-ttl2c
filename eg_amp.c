@@ -1,5 +1,5 @@
 // Include the generated header
-#include "ttl2c_eg_amp.h"
+#include "generated/ttl2c_eg_amp.h"
 
 // Implement the one callback necessary
 void run(struct eg_amp *instance, uint32_t nframes, float *gain, float *in, float *out)
@@ -17,5 +17,5 @@ struct eg_amp_callbacks eg_amp_callbacks =
 };
 
 // Include the generated C file
-#include "ttl2c_eg_amp.c"
+#include "generated/ttl2c_eg_amp.c"
 

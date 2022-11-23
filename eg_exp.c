@@ -1,4 +1,4 @@
-#include "ttl2c_eg_exp.h"
+#include "generated/ttl2c_eg_exp.h"
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,5 +42,5 @@ const struct eg_exp_callbacks eg_exp_callbacks =
     .cleanup = cleanup,
 };
 
-#include "ttl2c_eg_exp.c"
+#include "generated/ttl2c_eg_exp.c"
 
