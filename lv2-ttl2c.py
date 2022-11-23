@@ -24,7 +24,7 @@ w = lilv.World()
 w.load_bundle(bundle_file_uri)
 
 for plugin in w.get_all_plugins():
-    basename = str(plugin.get_uri()).split("://")[1].replace(":","_").replace("/","_").replace("-","_").replace(".","_")    
+    basename = str(plugin.get_uri()).split("://")[1].split("/")[-1].replace("-","_").replace(".","_")    
     f = open(os.path.join(args.output_directory, f'{basename}_callbacks.h'), 'w')
     f.write(f"""\
 #ifndef {basename}_cb_hh
