@@ -6,12 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
     
-enum eg_exp_port_indices {
-    t1 = 0,
-    in = 1,
-    out = 2,
-};
-
 static void eg_exp_connect_port_desc(LV2_Handle instance, uint32_t port, void *data_location)
 {
     if (eg_exp_callbacks.connect_port) 
@@ -72,7 +66,11 @@ static void eg_exp_run_desc(LV2_Handle instance, uint32_t sample_count)
 
     if (eg_exp_callbacks.run)
     {
-        eg_exp_callbacks.run(tinstance, sample_count, tinstance->ports[0], tinstance->ports[1], tinstance->ports[2]);
+        const struct eg_exp_port_t1 t1 = { .data = tinstance->ports[0] };
+        const struct eg_exp_port_in in = { .data = tinstance->ports[1] };
+        const struct eg_exp_port_out out = { .data = tinstance->ports[2] };
+
+        eg_exp_callbacks.run(tinstance, sample_count, t1, in, out);
     }
 }
 

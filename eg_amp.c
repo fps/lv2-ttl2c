@@ -2,11 +2,11 @@
 #include "generated/ttl2c_eg_amp.h"
 
 // Implement the one callback necessary
-void run(struct eg_amp *instance, uint32_t nframes, float *gain, float *in, float *out)
+void run(struct eg_amp *instance, uint32_t nframes, struct eg_amp_port_gain gain, struct eg_amp_port_in in, struct eg_amp_port_out out)
 {
     for (uint32_t frame = 0; frame < nframes; ++frame)
     {
-        out[frame] = gain[0] * in[frame];
+        out.data[frame] = gain.data[0] * in.data[frame];
     }
 }
 

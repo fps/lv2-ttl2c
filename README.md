@@ -24,11 +24,11 @@ You write the turle (ttl) files describing the plugins in your bundle and the py
 #include "generated/ttl2c_eg_amp.h"
 
 // Implement the one callback necessary
-void run(struct eg_amp *instance, uint32_t nframes, float *gain, float *in, float *out)
+void run(struct eg_amp *instance, uint32_t nframes, struct eg_amp_port_gain gain, struct eg_amp_port_in in, struct eg_amp_port_out out)
 {
     for (uint32_t frame = 0; frame < nframes; ++frame)
     {
-        out[frame] = gain[0] * in[frame];
+        out.data[frame] = gain.data[0] * in.data[frame];
     }
 }
 
@@ -78,13 +78,13 @@ void cleanup(struct eg_exp *instance) {
     free(instance->state);
 }
 
-void run(struct eg_exp *instance, uint32_t nframes, float *t1, float *in, float *out)
+void run(struct eg_exp *instance, uint32_t nframes, struct eg_exp_port_t1 t1, struct eg_exp_port_in in, struct eg_exp_port_out out)
 {
-    const float a = 1.0f - expf(-instance->state->sampling_interval/t1[0]);
+    const float a = 1.0f - expf(-instance->state->sampling_interval/t1.data[0]);
     for (uint32_t frame = 0; frame < nframes; ++frame)
     {
-        out[frame] = in[frame] * a + instance->state->s * (1 - a);
-        instance->state->s = in[frame];
+        out.data[frame] = in.data[frame] * a + instance->state->s * (1 - a);
+        instance->state->s = in.data[frame];
     }
 }
 
@@ -110,8 +110,8 @@ all: plugins test doc
 
 plugins:
 	./lv2-ttl2c -b lv2/example.lv2/manifest.ttl -o generated 
-	gcc eg_amp.c -pedantic -Wall -shared -o lv2/example.lv2/amp.so
-	gcc eg_exp.c -pedantic -Wall -shared -o lv2/example.lv2/exp.so
+	gcc eg_amp.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/amp.so
+	gcc eg_exp.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/exp.so
 
 test:
 	LV2_PATH=${PWD}/lv2 lv2ls

@@ -40,6 +40,28 @@ struct {basename} {{
     float *ports[{plugin.get_num_ports()}];
 }};
 
+enum {basename}_port_indices {{
+""")
+
+    for index in range(plugin.get_num_ports()):
+        port = plugin.get_port_by_index(index)
+        f.write(f'    {port.get_symbol()} = {index},\n')
+
+    f.write(f"""\
+}};
+""")
+    
+    for index in range(plugin.get_num_ports()):
+        port = plugin.get_port_by_index(index)
+        f.write(f"""
+struct {basename}_port_{port.get_symbol()} {{
+    float *data;
+}};
+""")
+
+    f.write(f"""
+     
+
 struct {basename}_callbacks
 {{
     struct {basename}* (*instantiate)(struct {basename} *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
@@ -49,7 +71,7 @@ struct {basename}_callbacks
 
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
-        f.write(f", float *{port.get_symbol()}")
+        f.write(f", struct {basename}_port_{port.get_symbol()} {port.get_symbol()}")
 
     f.write(f""");
     void(*deactivate)(struct {basename} *instance);
@@ -70,16 +92,6 @@ struct {basename}_callbacks
 #include <stdlib.h>
 #include <string.h>
     
-enum {basename}_port_indices {{
-""")
-
-    for index in range(plugin.get_num_ports()):
-        port = plugin.get_port_by_index(index)
-        f.write(f'    {port.get_symbol()} = {index},\n')
-
-    f.write(f"""\
-}};
-
 static void {basename}_connect_port_desc(LV2_Handle instance, uint32_t port, void *data_location)
 {{
     if ({basename}_callbacks.connect_port) 
@@ -140,10 +152,18 @@ static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count)
 
     if ({basename}_callbacks.run)
     {{
+""")
+    for index in range(plugin.get_num_ports()):
+        port = plugin.get_port_by_index(index)
+        f.write(f"""\
+        const struct {basename}_port_{port.get_symbol()} {port.get_symbol()} = {{ .data = tinstance->ports[{index}] }};
+""")
+    f.write(f"""\
+
         {basename}_callbacks.run(tinstance, sample_count""")
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
-        f.write(f', tinstance->ports[{index}]')
+        f.write(f', {port.get_symbol()}')
 
     f.write(f""");
     }}

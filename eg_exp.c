@@ -25,13 +25,13 @@ void cleanup(struct eg_exp *instance) {
     free(instance->state);
 }
 
-void run(struct eg_exp *instance, uint32_t nframes, float *t1, float *in, float *out)
+void run(struct eg_exp *instance, uint32_t nframes, struct eg_exp_port_t1 t1, struct eg_exp_port_in in, struct eg_exp_port_out out)
 {
-    const float a = 1.0f - expf(-instance->state->sampling_interval/t1[0]);
+    const float a = 1.0f - expf(-instance->state->sampling_interval/t1.data[0]);
     for (uint32_t frame = 0; frame < nframes; ++frame)
     {
-        out[frame] = in[frame] * a + instance->state->s * (1 - a);
-        instance->state->s = in[frame];
+        out.data[frame] = in.data[frame] * a + instance->state->s * (1 - a);
+        instance->state->s = in.data[frame];
     }
 }
 
