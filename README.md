@@ -3,7 +3,7 @@
 This repository contains a little python script to make writing an LV2 plugin a little less repetitive/painful.
 
 <pre>
-usage: lv2-ttl2c.py [-h] [-b BUNDLE] [-o OUTPUT_DIRECTORY] [-p PREFIX]
+usage: lv2-ttl2c [-h] [-b BUNDLE] [-o OUTPUT_DIRECTORY] [-p PREFIX]
 
 Generate useful C code from a LV2 plugin bundle's metadata
 

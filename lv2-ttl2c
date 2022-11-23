@@ -8,7 +8,6 @@ import os
 import pathlib
 
 argparser = argparse.ArgumentParser(
-    prog = 'lv2-ttl2c.py',
     description = 'Generate useful C code from a LV2 plugin bundle\'s metadata')
 
 argparser.add_argument('-b', '--bundle', default='.', help='the bundle directory to analyze')
