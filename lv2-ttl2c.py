@@ -25,7 +25,7 @@ w.load_bundle(bundle_file_uri)
 
 for plugin in w.get_all_plugins():
     basename = str(plugin.get_uri()).split("://")[1].split("/")[-1].replace("-","_").replace(".","_")    
-    f = open(os.path.join(args.output_directory, f'{basename}_callbacks.h'), 'w')
+    f = open(os.path.join(args.output_directory, f'ttl2c_{basename}.h'), 'w')
     f.write(f"""\
 #ifndef {basename}_cb_hh
 #define {basename}_cb_hh
@@ -58,7 +58,7 @@ struct {basename}_callbacks_t
 #endif\
     """)
 
-    f = open(os.path.join(args.output_directory, f'{basename}.h'), 'w')
+    f = open(os.path.join(args.output_directory, f'ttl2c_{basename}.c'), 'w')
     f.write(f"""\
 #ifndef {basename}_hh
 #define {basename}_hh

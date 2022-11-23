@@ -2,13 +2,13 @@
     First we include a "preamble" of sorts where a struct type containing callbacks
     is declared
 */
-#include "eg_amp_callbacks.h"
+#include "ttl2c_eg_amp.h"
 
 /*
     Then we implement those callbacks that we want. Note that the ports
     have been translated from indices to named arguments:
 */
-void run(struct lv2plug_in_plugins_eg_amp *instance, uint32_t nframes, float *gain, float *in, float *out)
+void run(struct eg_amp *instance, uint32_t nframes, float *gain, float *in, float *out)
 {
     for (uint32_t frame = 0; frame < nframes; ++frame)
     {
@@ -27,5 +27,5 @@ struct eg_amp_callbacks_t eg_amp_callbacks =
 /*
     And finally we include the rest of the implementation magic
 */
-#include "eg_amp.h"
+#include "ttl2c_eg_amp.c"
 
