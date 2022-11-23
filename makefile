@@ -14,4 +14,4 @@ test:
 	LV2_PATH=${PWD}/lv2 valgrind lv2bench http://lv2plug.in/plugins/eg-exp
 
 doc:
-	cat README.md.in | ./regexec > README.md
+	cat README.md.in | ./regexec | ./regexec -e "\[usage\]" -c "./lv2-ttl2c -h" -n 1 > README.md

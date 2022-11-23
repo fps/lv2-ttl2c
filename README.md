@@ -2,6 +2,19 @@
 
 This repository contains a little python script to make writing an LV2 plugin a little less repetitive/painful.
 
+<pre>
+usage: lv2-ttl2c.py [-h] [-b BUNDLE] [-o OUTPUT_DIRECTORY]
+
+Generate useful C code from a LV2 plugin bundle's metadata
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -b BUNDLE, --bundle BUNDLE
+                        the bundle directory to analyze
+  -o OUTPUT_DIRECTORY, --output-directory OUTPUT_DIRECTORY
+                        the output directory
+</pre>
+
 You write the turle (ttl) files describing the plugins in your bundle and the python script then generates some useful <code>#include</code>s for you. Below you see the code that's necessary to write when running the script on the amp-plugin example from the lv2 distribution (included here for reference and testing in the <code>lv2/</code> directory)
 
 ```C
@@ -105,7 +118,8 @@ test:
 	LV2_PATH=${PWD}/lv2 valgrind lv2bench http://lv2plug.in/plugins/eg-exp
 
 doc:
-	cat README.md.in | ./regexec > README.md
+	cat README.md.in | ./regexec | ./regexec -e "\[usage\]" -c "./lv2-ttl2c -h" -n 1 > README.md
 
 ```
+
 
