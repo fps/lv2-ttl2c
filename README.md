@@ -33,7 +33,7 @@ void run(struct plugin *instance, uint32_t nframes, struct plugin_port_gain gain
 }
 
 // We want run() to be run ;)
-struct plugin_callbacks plugin_callbacks = 
+const struct plugin_callbacks plugin_callbacks = 
 {
     .run = run
 };
