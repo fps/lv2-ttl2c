@@ -42,7 +42,7 @@ struct {basename} {{
 
 struct {basename}_callbacks_t
 {{
-    LV2_Handle(*instantiate)(struct {basename} *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
+    struct {basename}* (*instantiate)(struct {basename} *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
     void (*connect_port)(struct {basename} *instance, uint32_t port, void *data_location);
     void(*activate)(struct {basename} *instance);
     void(*run)(struct {basename} *instance, uint32_t sample_count""")

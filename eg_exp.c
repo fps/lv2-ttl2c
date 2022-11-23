@@ -9,7 +9,7 @@ struct eg_exp_state
     float s;
 };
 
-LV2_Handle instantiate(struct eg_exp *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
+struct eg_exp* instantiate(struct eg_exp *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
 {
     instance->state = malloc(sizeof(struct eg_exp_state));
     memset(instance->state, 0, sizeof(struct eg_exp_state));
