@@ -1,7 +1,3 @@
-#include <lv2.h>
-#include <stdio.h>
-#include <stdint.h>
-
 /*
     First we include a "preamble" of sorts where a struct type containing callbacks
     is declared
@@ -25,13 +21,7 @@ void run(struct lv2plug_in_plugins_eg_amp *instance, uint32_t nframes, float *ga
 */
 struct lv2plug_in_plugins_eg_amp_callbacks_t lv2plug_in_plugins_eg_amp_callbacks = 
 {
-    NULL,
-    NULL,
-    NULL,
-    run,
-    NULL,
-    NULL,
-    NULL,
+    .run = run
 };
 
 /*

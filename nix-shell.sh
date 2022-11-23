@@ -1,1 +1,1 @@
-nix-shell -p lilv python3
+nix-shell -p lilv python3 valgrind

@@ -29,6 +29,9 @@ for plugin in w.get_all_plugins():
     f.write(f"""\
 #ifndef {basename}_cb_hh
 #define {basename}_cb_hh
+
+#include <lv2.h>
+#include <stdint.h>
  
 struct {basename} {{
     struct {basename}_state *state;
