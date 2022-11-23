@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+
+import re
+import sys
+import string
+import argparse
+import subprocess
+
+parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+parser.add_argument(
+    "-e", 
+    help="The (python2) regular expression", 
+    default=r"\[include (.+?)\]"
+)
+
+parser.add_argument(
+    "-n", 
+    help="How many characters to strip from the end of command outputs - useful to remove trailing newlines", 
+    default=0,
+    type=int
+)
+
+parser.add_argument(
+    "-c", 
+    help="The command to run with the expression's match groups as arguments and who's output replaces the match", 
+    default=r"cat \1"
+)
+
+parser.add_argument(
+    "-v", 
+    help="The verbosity level", 
+    default=0,
+    type=int
+)
+
+args = parser.parse_args()
+
+def verbose_log(l, s):
+    if args.v >= l:
+        print(s)
+
+p = re.compile(args.e)
+
+inp = sys.stdin.read()
+out = ""
+
+matches = p.finditer(inp)
+
+inp_index = 0
+for match in matches:
+    span = match.span()
+    
+    out += inp[inp_index:span[0]]
+    inp_index = span[1]
+
+    new_c = args.c
+    if match.lastindex:
+        verbose_log(1, "lastindex: " + str(match.lastindex))
+        for index in range(1, match.lastindex + 1):
+            verbose_log(1, "$" + str(index) + ": " + match.group(index))
+            new_c = new_c.replace("\\" + str(index), match.group(index))
+            verbose_log(1, "new_c: " + new_c)
+
+    suboutput = subprocess.check_output(new_c, shell=True).decode('utf-8')
+    verbose_log(1, "suboutput: " + suboutput)
+    out += suboutput[0:len(suboutput)-args.n]
+
+out += inp[inp_index:]
+
+print(out),

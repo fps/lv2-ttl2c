@@ -80,3 +80,9 @@ struct eg_exp_callbacks_t eg_exp_callbacks =
 
 #include "ttl2c_eg_exp.c"
 ```
+
+
+```
+#include "eg_amp.c"
+
+[include eg_amp.c]
