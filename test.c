@@ -1,13 +1,7 @@
-/*
-    First we include a "preamble" of sorts where a struct type containing callbacks
-    is declared
-*/
+// Include the generated header
 #include "ttl2c_eg_amp.h"
 
-/*
-    Then we implement those callbacks that we want. Note that the ports
-    have been translated from indices to named arguments:
-*/
+// Implement the one callback necessary
 void run(struct eg_amp *instance, uint32_t nframes, float *gain, float *in, float *out)
 {
     for (uint32_t frame = 0; frame < nframes; ++frame)
@@ -16,16 +10,12 @@ void run(struct eg_amp *instance, uint32_t nframes, float *gain, float *in, floa
     }
 }
 
-/*
-    And put them in a special variable of the callbacks struct type:
-*/
+// We want run() to be run ;)
 struct eg_amp_callbacks_t eg_amp_callbacks = 
 {
     .run = run
 };
 
-/*
-    And finally we include the rest of the implementation magic
-*/
+// Include the generated C file
 #include "ttl2c_eg_amp.c"
 
