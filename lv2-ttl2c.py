@@ -1,0 +1,196 @@
+#!/usr/bin/env python
+
+import lilv
+import argparse
+import sys
+import pprint
+import os
+import pathlib
+
+argparser = argparse.ArgumentParser(
+    prog = 'lv2-ttl2c.py',
+    description = 'Generate useful C code from a LV2 plugin bundle\'s metadata')
+
+argparser.add_argument('-b', '--bundle', default='.', help='the bundle directory to analyze')
+argparser.add_argument('-o', '--output-directory', default='.', help='the output directory')
+argparser.add_argument('-p', '--prefix', default='ttl2c_', help='the prefix added to output filenames')
+
+args = argparser.parse_args()
+
+bundle_file_uri = pathlib.PurePath.as_uri(pathlib.Path(os.path.abspath(args.bundle)))
+
+# print(bundle_file_uri)
+
+w = lilv.World()
+w.load_bundle(bundle_file_uri)
+
+for plugin in w.get_all_plugins():
+    basename = str(plugin.get_uri()).split("://")[1].split("/")[-1].replace("-","_").replace(".","_")    
+    f = open(os.path.join(args.output_directory, f'{args.prefix}{basename}.h'), 'w')
+    f.write(f"""\
+#ifndef {basename}_cb_hh
+#define {basename}_cb_hh
+
+#include <lv2.h>
+#include <stdint.h>
+ 
+struct {basename}_state;
+
+struct {basename} {{
+    struct {basename}_state *state;
+    float *ports[{plugin.get_num_ports()}];
+}};
+
+struct {basename}_callbacks
+{{
+    struct {basename}* (*instantiate)(struct {basename} *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
+    void (*connect_port)(struct {basename} *instance, uint32_t port, void *data_location);
+    void(*activate)(struct {basename} *instance);
+    void(*run)(struct {basename} *instance, uint32_t sample_count""")
+
+    for index in range(plugin.get_num_ports()):
+        port = plugin.get_port_by_index(index)
+        f.write(f", float *{port.get_symbol()}")
+
+    f.write(f""");
+    void(*deactivate)(struct {basename} *instance);
+    void(*cleanup)(struct {basename} *instance);
+    const void *(*extension_data)(const char *uri);
+}};
+
+#endif\
+    """)
+
+    f = open(os.path.join(args.output_directory, f'{args.prefix}{basename}.c'), 'w')
+    f.write(f"""\
+#ifndef {basename}_hh
+#define {basename}_hh
+    
+  
+#include <lv2.h>
+#include <stdlib.h>
+#include <string.h>
+    
+enum {basename}_port_indices {{
+""")
+
+    for index in range(plugin.get_num_ports()):
+        port = plugin.get_port_by_index(index)
+        f.write(f'    {port.get_symbol()} = {index},\n')
+
+    f.write(f"""\
+}};
+
+static void {basename}_connect_port_desc(LV2_Handle instance, uint32_t port, void *data_location)
+{{
+    if ({basename}_callbacks.connect_port) 
+    {{ 
+        {basename}_callbacks.connect_port(instance, port, data_location); 
+    }} 
+    else 
+    {{
+        if (port < {plugin.get_num_ports()}) 
+        {{
+            ((struct {basename}*)instance)->ports[port] = (float*)data_location;
+        }}
+    }}
+}}
+
+static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
+{{
+    struct {basename} *instance = malloc(sizeof(struct {basename}));
+    memset(instance, 0,  sizeof(struct {basename}));
+    if ({basename}_callbacks.instantiate)
+    {{
+        {basename}_callbacks.instantiate(instance, sample_rate, bundle_path, features);
+    }}
+    return (LV2_Handle)(instance);
+}}
+
+static void {basename}_cleanup_desc(LV2_Handle instance)
+{{
+    struct {basename} *tinstance = (struct {basename}*)instance;
+
+    if ({basename}_callbacks.cleanup)
+    {{
+        {basename}_callbacks.cleanup(tinstance);
+    }}
+
+    free(tinstance);
+}}
+
+static void {basename}_activate_desc(LV2_Handle instance)
+{{
+    if ({basename}_callbacks.activate)
+    {{
+        {basename}_callbacks.activate(instance);
+    }}
+}}
+
+static void {basename}_deactivate_desc(LV2_Handle instance)
+{{
+    if ({basename}_callbacks.deactivate)
+    {{
+        {basename}_callbacks.deactivate(instance);
+    }}
+}}
+
+static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count)
+{{
+    struct {basename} *tinstance = (struct {basename}*)instance;
+
+    if ({basename}_callbacks.run)
+    {{
+        {basename}_callbacks.run(tinstance, sample_count""")
+    for index in range(plugin.get_num_ports()):
+        port = plugin.get_port_by_index(index)
+        f.write(f', tinstance->ports[{index}]')
+
+    f.write(f""");
+    }}
+}}
+
+static const void *{basename}_extension_data_desc(const char *uri)
+{{
+    if ({basename}_callbacks.extension_data)
+    {{
+        return {basename}_callbacks.extension_data(uri);
+    }} 
+    else 
+    {{
+        return 0;
+    }}
+}}
+
+
+
+static LV2_Descriptor {basename}_descriptor = 
+{{
+    "{plugin.get_uri()}",
+    {basename}_instantiate_desc,
+    {basename}_connect_port_desc,
+    {basename}_activate_desc,
+    {basename}_run_desc,
+    {basename}_deactivate_desc,
+    {basename}_cleanup_desc,
+    {basename}_extension_data_desc
+}};
+
+LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor (uint32_t index)
+{{
+    if (0 == index) 
+    {{
+          return &{basename}_descriptor;
+    }}
+    else 
+    {{ 
+          return NULL;
+    }}
+}}
+
+
+#endif // {basename}_hh\
+    """)
+
+
+
