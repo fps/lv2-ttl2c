@@ -1,4 +1,3 @@
-// Include the generated header
 #include "ttl2c_eg_exp.h"
 #include <math.h>
 #include <stdlib.h>
@@ -16,7 +15,6 @@ struct eg_exp* instantiate(struct eg_exp *instance, double sample_rate, const ch
     return instance;
 }
 
-// Implement the one callback necessary
 void run(struct eg_exp *instance, uint32_t nframes, float *t1, float *in, float *out)
 {
     const float a = expf(1/t1[0]);
@@ -27,13 +25,11 @@ void run(struct eg_exp *instance, uint32_t nframes, float *t1, float *in, float 
     }
 }
 
-// We want run() to be run ;)
 struct eg_exp_callbacks_t eg_exp_callbacks = 
 {
     .run = run,
     .instantiate = instantiate,
 };
 
-// Include the generated C file
 #include "ttl2c_eg_exp.c"
 
