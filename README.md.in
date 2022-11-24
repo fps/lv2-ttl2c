@@ -28,3 +28,8 @@ Here is the makefile included with this project used to build and test the gener
 ```make
 [include makefile]
 ```
+
+# License
+
+Gnu GPL v3
+

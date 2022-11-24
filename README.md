@@ -124,4 +124,9 @@ doc:
 
 ```
 
+# License
+
+Gnu GPL v3
+
+
 
