@@ -16,8 +16,9 @@ argparser.add_argument('-p', '--prefix', default='ttl2c_', help='the prefix adde
 
 args = argparser.parse_args()
 
-bundle_file_uri = pathlib.PurePath.as_uri(pathlib.Path(os.path.abspath(args.bundle)))
+bundle_file_uri = pathlib.PurePath.as_uri(pathlib.Path(os.path.abspath(args.bundle))) + "/"
 
+# print(os.path.abspath(args.bundle))
 # print(bundle_file_uri)
 
 w = lilv.World()
