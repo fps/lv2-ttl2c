@@ -25,7 +25,8 @@ You write the turle (ttl) files describing the plugins in your bundle and the py
 
 // Implement the one callback necessary. Note how there is one type per port.
 // (this reduces errors)
-static void run(
+static void run
+(
     plugin_t *instance, uint32_t nframes, 
     const plugin_port_gain_t gain, 
     const plugin_port_in_t in, 
@@ -86,7 +87,8 @@ static void cleanup(plugin_t *instance) {
     free(instance->state);
 }
 
-static void run(
+static void run
+(
     plugin_t *instance, uint32_t nframes, 
     const plugin_port_t1_t t1, 
     const plugin_port_in_t in, 
