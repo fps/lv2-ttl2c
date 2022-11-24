@@ -98,20 +98,20 @@ static void {basename}_connect_port_desc(LV2_Handle instance, uint32_t port, voi
 {{
     if ({basename}_callbacks.connect_port) 
     {{ 
-        {basename}_callbacks.connect_port(instance, port, data_location); 
+        {basename}_callbacks.connect_port(({basename}_t *)instance, port, data_location); 
     }} 
     else 
     {{
         if (port < {plugin.get_num_ports()}) 
         {{
-            ((struct {basename}*)instance)->ports[port] = (float*)data_location;
+            (({basename}_t*)instance)->ports[port] = (float*)data_location;
         }}
     }}
 }}
 
 static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
 {{
-    struct {basename} *instance = malloc(sizeof(struct {basename}));
+    {basename}_t *instance = ({basename}_t*)malloc(sizeof(struct {basename}));
     memset(instance, 0,  sizeof(struct {basename}));
     if ({basename}_callbacks.instantiate)
     {{
@@ -122,21 +122,19 @@ static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, 
 
 static void {basename}_cleanup_desc(LV2_Handle instance)
 {{
-    struct {basename} *tinstance = (struct {basename}*)instance;
-
     if ({basename}_callbacks.cleanup)
     {{
-        {basename}_callbacks.cleanup(tinstance);
+        {basename}_callbacks.cleanup(({basename}_t*)instance);
     }}
 
-    free(tinstance);
+    free(instance);
 }}
 
 static void {basename}_activate_desc(LV2_Handle instance)
 {{
     if ({basename}_callbacks.activate)
     {{
-        {basename}_callbacks.activate(instance);
+        {basename}_callbacks.activate(({basename}_t*)instance);
     }}
 }}
 
@@ -144,25 +142,23 @@ static void {basename}_deactivate_desc(LV2_Handle instance)
 {{
     if ({basename}_callbacks.deactivate)
     {{
-        {basename}_callbacks.deactivate(instance);
+        {basename}_callbacks.deactivate(({basename}_t*)instance);
     }}
 }}
 
 static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count)
 {{
-    struct {basename} *tinstance = (struct {basename}*)instance;
-
     if ({basename}_callbacks.run)
     {{
 """)
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
         f.write(f"""\
-        const struct {basename}_port_{port.get_symbol()} {port.get_symbol()} = {{ .data = tinstance->ports[{index}] }};
+        const struct {basename}_port_{port.get_symbol()} {port.get_symbol()} = {{ .data = (({basename}_t*)instance)->ports[{index}] }};
 """)
     f.write(f"""\
 
-        {basename}_callbacks.run(tinstance, sample_count""")
+        {basename}_callbacks.run(({basename}_t*)instance, sample_count""")
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
         f.write(f', {port.get_symbol()}')
