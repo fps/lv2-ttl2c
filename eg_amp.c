@@ -10,6 +10,8 @@ static void run(
 {
     for (uint32_t frame = 0; frame < nframes; ++frame)
     {
+        // Each port type has a .data member which hold the connected data
+        // location:
         out.data[frame] = gain.data[0] * in.data[frame];
     }
 }
