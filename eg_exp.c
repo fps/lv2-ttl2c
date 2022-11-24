@@ -25,7 +25,12 @@ static void cleanup(plugin_t *instance) {
     free(instance->state);
 }
 
-static void run(plugin_t *instance, uint32_t nframes, const plugin_port_t1_t t1, const plugin_port_in_t in, const plugin_port_out_t out)
+static void run(
+    plugin_t *instance, uint32_t nframes, 
+    const plugin_port_t1_t t1, 
+    const plugin_port_in_t in, 
+    const plugin_port_out_t out
+)
 {
     plugin_state_t *state = instance->state;
 
