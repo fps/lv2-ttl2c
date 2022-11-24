@@ -37,10 +37,10 @@ for plugin in w.get_all_plugins():
  
 struct {basename}_state;
 
-struct {basename} {{
+typedef struct {basename} {{
     struct {basename}_state *state;
     float *ports[{plugin.get_num_ports()}];
-}};
+}} {basename}_t;
 
 enum {basename}_port_indices {{
 """)
@@ -56,30 +56,30 @@ enum {basename}_port_indices {{
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
         f.write(f"""
-struct {basename}_port_{port.get_symbol()} {{
+typedef struct {basename}_port_{port.get_symbol()} {{
     float *data;
-}};
+}} {basename}_port_{port.get_symbol()}_t;
 """)
 
     f.write(f"""
      
 
-struct {basename}_callbacks
+typedef struct {basename}_callbacks
 {{
-    struct {basename}* (*instantiate)(struct {basename} *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
-    void (*connect_port)(struct {basename} *instance, uint32_t port, void *data_location);
-    void(*activate)(struct {basename} *instance);
-    void(*run)(struct {basename} *instance, uint32_t sample_count""")
+    struct {basename}* (*instantiate)({basename}_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
+    void (*connect_port)({basename}_t *instance, uint32_t port, void *data_location);
+    void(*activate)({basename}_t *instance);
+    void(*run)({basename}_t *instance, uint32_t sample_count""")
 
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
-        f.write(f", struct {basename}_port_{port.get_symbol()} {port.get_symbol()}")
+        f.write(f", {basename}_port_{port.get_symbol()}_t {port.get_symbol()}")
 
     f.write(f""");
-    void(*deactivate)(struct {basename} *instance);
-    void(*cleanup)(struct {basename} *instance);
+    void(*deactivate)({basename}_t *instance);
+    void(*cleanup)({basename}_t *instance);
     const void *(*extension_data)(const char *uri);
-}};
+}} {basename}_callbacks_t;
 
 #endif\
     """)

@@ -2,7 +2,7 @@
 #include "generated/ttl2c_eg_amp.h"
 
 // Implement the one callback necessary
-static void run(struct plugin *instance, uint32_t nframes, struct plugin_port_gain gain, struct plugin_port_in in, struct plugin_port_out out)
+static void run(plugin_t *instance, uint32_t nframes, plugin_port_gain_t gain, plugin_port_in_t in, plugin_port_out_t out)
 {
     for (uint32_t frame = 0; frame < nframes; ++frame)
     {
@@ -11,7 +11,7 @@ static void run(struct plugin *instance, uint32_t nframes, struct plugin_port_ga
 }
 
 // We want run() to be run ;)
-const struct plugin_callbacks plugin_callbacks = 
+const plugin_callbacks_t plugin_callbacks = 
 {
     .run = run
 };
