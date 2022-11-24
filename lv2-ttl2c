@@ -68,16 +68,16 @@ typedef struct {basename}_callbacks
 {{
     struct {basename}* (*const instantiate)({basename}_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
     void (*const connect_port)({basename}_t *instance, uint32_t port, void *data_location);
-    void(* const activate)({basename}_t *instance);
-    void(* const run)({basename}_t *instance, uint32_t sample_count""")
+    void (*const activate)({basename}_t *instance);
+    void (*const run)({basename}_t *instance, uint32_t sample_count""")
 
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
         f.write(f", const {basename}_port_{port.get_symbol()}_t {port.get_symbol()}")
 
     f.write(f""");
-    void(*const deactivate)({basename}_t *instance);
-    void(*const cleanup)({basename}_t *instance);
+    void (*const deactivate)({basename}_t *instance);
+    void (*const cleanup)({basename}_t *instance);
     const void *(*const extension_data)(const char *uri);
 }} {basename}_callbacks_t;
 
