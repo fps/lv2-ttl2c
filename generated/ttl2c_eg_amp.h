@@ -36,7 +36,7 @@ typedef struct plugin_callbacks
     struct plugin* (*instantiate)(plugin_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
     void (*connect_port)(plugin_t *instance, uint32_t port, void *data_location);
     void(*activate)(plugin_t *instance);
-    void(*run)(plugin_t *instance, uint32_t sample_count, plugin_port_gain_t gain, plugin_port_in_t in, plugin_port_out_t out);
+    void(*run)(plugin_t *instance, uint32_t sample_count, const plugin_port_gain_t gain, const plugin_port_in_t in, const plugin_port_out_t out);
     void(*deactivate)(plugin_t *instance);
     void(*cleanup)(plugin_t *instance);
     const void *(*extension_data)(const char *uri);

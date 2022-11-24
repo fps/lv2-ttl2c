@@ -73,7 +73,7 @@ typedef struct {basename}_callbacks
 
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
-        f.write(f", {basename}_port_{port.get_symbol()}_t {port.get_symbol()}")
+        f.write(f", const {basename}_port_{port.get_symbol()}_t {port.get_symbol()}")
 
     f.write(f""");
     void(*deactivate)({basename}_t *instance);

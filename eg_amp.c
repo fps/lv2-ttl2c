@@ -5,7 +5,7 @@
 // (this reduces errors)
 static void run(
     plugin_t *instance, uint32_t nframes, 
-    plugin_port_gain_t gain, plugin_port_in_t in, plugin_port_out_t out
+    const plugin_port_gain_t gain, const plugin_port_in_t in, const plugin_port_out_t out
 )
 {
     for (uint32_t frame = 0; frame < nframes; ++frame)
