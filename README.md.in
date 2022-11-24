@@ -29,6 +29,23 @@ Here is the makefile included with this project used to build and test the gener
 [include makefile]
 ```
 
+# Generated files
+
+For reference here are the two generated files for the second example:
+
+`ttl2c_eg_exp.h`:
+
+```C
+[include generated/ttl2c_eg_exp.h]
+```
+
+`ttl2c_eg_exp.c`:
+
+```C
+[include generated/ttl2c_eg_exp.c]
+```
+
+
 # License
 
 Gnu GPL v3

@@ -130,6 +130,182 @@ doc:
 
 ```
 
+# Generated files
+
+For reference here are the two generated files for the second example:
+
+`ttl2c_eg_exp.h`:
+
+```C
+#ifndef plugin_cb_hh
+#define plugin_cb_hh
+
+#include <lv2.h>
+#include <stdint.h>
+ 
+struct plugin_state;
+
+typedef struct plugin {
+    struct plugin_state *state;
+    float *ports[3];
+} plugin_t;
+
+enum plugin_port_indices {
+    t1 = 0,
+    in = 1,
+    out = 2,
+};
+
+typedef struct plugin_port_t1 {
+    float *data;
+} plugin_port_t1_t;
+
+typedef struct plugin_port_in {
+    float *data;
+} plugin_port_in_t;
+
+typedef struct plugin_port_out {
+    float *data;
+} plugin_port_out_t;
+
+     
+
+typedef struct plugin_callbacks
+{
+    struct plugin* (*const instantiate)(plugin_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
+    void (*const connect_port)(plugin_t *instance, uint32_t port, void *data_location);
+    void(* const activate)(plugin_t *instance);
+    void(* const run)(plugin_t *instance, uint32_t sample_count, const plugin_port_t1_t t1, const plugin_port_in_t in, const plugin_port_out_t out);
+    void(*const deactivate)(plugin_t *instance);
+    void(*const cleanup)(plugin_t *instance);
+    const void *(*const extension_data)(const char *uri);
+} plugin_callbacks_t;
+
+#endif    
+```
+
+`ttl2c_eg_exp.c`:
+
+```C
+#ifndef plugin_hh
+#define plugin_hh
+    
+  
+#include <lv2.h>
+#include <stdlib.h>
+#include <string.h>
+    
+static void plugin_connect_port_desc(LV2_Handle instance, uint32_t port, void *data_location)
+{
+    if (plugin_callbacks.connect_port) 
+    { 
+        plugin_callbacks.connect_port(instance, port, data_location); 
+    } 
+    else 
+    {
+        if (port < 3) 
+        {
+            ((struct plugin*)instance)->ports[port] = (float*)data_location;
+        }
+    }
+}
+
+static LV2_Handle plugin_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
+{
+    struct plugin *instance = malloc(sizeof(struct plugin));
+    memset(instance, 0,  sizeof(struct plugin));
+    if (plugin_callbacks.instantiate)
+    {
+        plugin_callbacks.instantiate(instance, sample_rate, bundle_path, features);
+    }
+    return (LV2_Handle)(instance);
+}
+
+static void plugin_cleanup_desc(LV2_Handle instance)
+{
+    struct plugin *tinstance = (struct plugin*)instance;
+
+    if (plugin_callbacks.cleanup)
+    {
+        plugin_callbacks.cleanup(tinstance);
+    }
+
+    free(tinstance);
+}
+
+static void plugin_activate_desc(LV2_Handle instance)
+{
+    if (plugin_callbacks.activate)
+    {
+        plugin_callbacks.activate(instance);
+    }
+}
+
+static void plugin_deactivate_desc(LV2_Handle instance)
+{
+    if (plugin_callbacks.deactivate)
+    {
+        plugin_callbacks.deactivate(instance);
+    }
+}
+
+static void plugin_run_desc(LV2_Handle instance, uint32_t sample_count)
+{
+    struct plugin *tinstance = (struct plugin*)instance;
+
+    if (plugin_callbacks.run)
+    {
+        const struct plugin_port_t1 t1 = { .data = tinstance->ports[0] };
+        const struct plugin_port_in in = { .data = tinstance->ports[1] };
+        const struct plugin_port_out out = { .data = tinstance->ports[2] };
+
+        plugin_callbacks.run(tinstance, sample_count, t1, in, out);
+    }
+}
+
+static const void *plugin_extension_data_desc(const char *uri)
+{
+    if (plugin_callbacks.extension_data)
+    {
+        return plugin_callbacks.extension_data(uri);
+    } 
+    else 
+    {
+        return 0;
+    }
+}
+
+
+
+static LV2_Descriptor plugin_descriptor = 
+{
+    "http://lv2plug.in/plugins/eg-exp",
+    plugin_instantiate_desc,
+    plugin_connect_port_desc,
+    plugin_activate_desc,
+    plugin_run_desc,
+    plugin_deactivate_desc,
+    plugin_cleanup_desc,
+    plugin_extension_data_desc
+};
+
+LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor (uint32_t index)
+{
+    if (0 == index) 
+    {
+          return &plugin_descriptor;
+    }
+    else 
+    { 
+          return NULL;
+    }
+}
+
+
+#endif // plugin_hh    
+```
+
+
 # License
 
 Gnu GPL v3
