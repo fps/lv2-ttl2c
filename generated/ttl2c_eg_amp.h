@@ -33,13 +33,13 @@ typedef struct plugin_port_out {
 
 typedef struct plugin_callbacks
 {
-    struct plugin* (*instantiate)(plugin_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
-    void (*connect_port)(plugin_t *instance, uint32_t port, void *data_location);
-    void(*activate)(plugin_t *instance);
-    void(*run)(plugin_t *instance, uint32_t sample_count, const plugin_port_gain_t gain, const plugin_port_in_t in, const plugin_port_out_t out);
-    void(*deactivate)(plugin_t *instance);
-    void(*cleanup)(plugin_t *instance);
-    const void *(*extension_data)(const char *uri);
+    struct plugin* (*const instantiate)(plugin_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
+    void (*const connect_port)(plugin_t *instance, uint32_t port, void *data_location);
+    void(* const activate)(plugin_t *instance);
+    void(* const run)(plugin_t *instance, uint32_t sample_count, const plugin_port_gain_t gain, const plugin_port_in_t in, const plugin_port_out_t out);
+    void(*const deactivate)(plugin_t *instance);
+    void(*const cleanup)(plugin_t *instance);
+    const void *(*const extension_data)(const char *uri);
 } plugin_callbacks_t;
 
 #endif    
