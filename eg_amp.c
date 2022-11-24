@@ -3,7 +3,8 @@
 
 // Implement the one callback necessary. Note how there is one type per port.
 // (this reduces errors)
-static void run(
+static void run
+(
     plugin_t *instance, uint32_t nframes, 
     const plugin_port_gain_t gain, 
     const plugin_port_in_t in, 
