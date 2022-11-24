@@ -12,7 +12,7 @@ struct plugin_state
 
 // The instantiate callback already gets a struct plugin *instance pointer instead of an LV2_Handle
 // and only needs to perform additional initialisation.
-struct plugin* instantiate(struct plugin *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
+static struct plugin* instantiate(struct plugin *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
 {
     instance->state = malloc(sizeof(struct plugin_state));
     memset(instance->state, 0, sizeof(struct plugin_state));
@@ -21,11 +21,11 @@ struct plugin* instantiate(struct plugin *instance, double sample_rate, const ch
 }
 
 // And similarly the cleanup callback only needs to care about the additional deinitialisation (inverse of instantiate).
-void cleanup(struct plugin *instance) {
+static void cleanup(struct plugin *instance) {
     free(instance->state);
 }
 
-void run(struct plugin *instance, uint32_t nframes, struct plugin_port_t1 t1, struct plugin_port_in in, struct plugin_port_out out)
+static void run(struct plugin *instance, uint32_t nframes, struct plugin_port_t1 t1, struct plugin_port_in in, struct plugin_port_out out)
 {
     const float a = 1.0f - expf(-instance->state->sampling_interval/t1.data[0]);
     for (uint32_t frame = 0; frame < nframes; ++frame)
@@ -35,7 +35,7 @@ void run(struct plugin *instance, uint32_t nframes, struct plugin_port_t1 t1, st
     }
 }
 
-const struct plugin_callbacks plugin_callbacks = 
+static const struct plugin_callbacks plugin_callbacks = 
 {
     .run = run,
     .instantiate = instantiate,
