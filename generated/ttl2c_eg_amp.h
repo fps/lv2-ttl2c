@@ -4,7 +4,7 @@
 #include <lv2.h>
 #include <stdint.h>
  
-struct plugin_state;
+typedef struct plugin_state plugin_state_t;
 
 typedef struct plugin {
     struct plugin_state *state;
