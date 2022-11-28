@@ -6,62 +6,47 @@
 #include <stdlib.h>
 #include <string.h>
     
-static void plugin_connect_port_desc(LV2_Handle instance, uint32_t port, void *data_location)
-{
-    if (plugin_callbacks.connect_port) 
-    { 
+static void plugin_connect_port_desc(LV2_Handle instance, uint32_t port, void *data_location) {
+    if (plugin_callbacks.connect_port) { 
         plugin_callbacks.connect_port((plugin_t *)instance, port, data_location); 
-    } 
-    else 
-    {
-        if (port < 3) 
-        {
+    } else {
+        if (port < 3) {
             ((plugin_t*)instance)->ports[port] = (float*)data_location;
         }
     }
 }
 
-static LV2_Handle plugin_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
-{
+static LV2_Handle plugin_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features) {
     plugin_t *instance = (plugin_t*)malloc(sizeof(struct plugin));
     memset(instance, 0,  sizeof(struct plugin));
-    if (plugin_callbacks.instantiate)
-    {
+    if (plugin_callbacks.instantiate) {
         plugin_callbacks.instantiate(instance, sample_rate, bundle_path, features);
     }
     return (LV2_Handle)(instance);
 }
 
-static void plugin_cleanup_desc(LV2_Handle instance)
-{
-    if (plugin_callbacks.cleanup)
-    {
+static void plugin_cleanup_desc(LV2_Handle instance) {
+    if (plugin_callbacks.cleanup) {
         plugin_callbacks.cleanup((plugin_t*)instance);
     }
 
     free(instance);
 }
 
-static void plugin_activate_desc(LV2_Handle instance)
-{
-    if (plugin_callbacks.activate)
-    {
+static void plugin_activate_desc(LV2_Handle instance) {
+    if (plugin_callbacks.activate) {
         plugin_callbacks.activate((plugin_t*)instance);
     }
 }
 
-static void plugin_deactivate_desc(LV2_Handle instance)
-{
-    if (plugin_callbacks.deactivate)
-    {
+static void plugin_deactivate_desc(LV2_Handle instance) {
+    if (plugin_callbacks.deactivate) {
         plugin_callbacks.deactivate((plugin_t*)instance);
     }
 }
 
-static void plugin_run_desc(LV2_Handle instance, uint32_t sample_count)
-{
-    if (plugin_callbacks.run)
-    {
+static void plugin_run_desc(LV2_Handle instance, uint32_t sample_count) {
+    if (plugin_callbacks.run) {
         const struct plugin_port_gain gain = { .data = ((plugin_t*)instance)->ports[0] };
         const struct plugin_port_in in = { .data = ((plugin_t*)instance)->ports[1] };
         const struct plugin_port_out out = { .data = ((plugin_t*)instance)->ports[2] };
@@ -70,22 +55,17 @@ static void plugin_run_desc(LV2_Handle instance, uint32_t sample_count)
     }
 }
 
-static const void *plugin_extension_data_desc(const char *uri)
-{
-    if (plugin_callbacks.extension_data)
-    {
+static const void *plugin_extension_data_desc(const char *uri) {
+    if (plugin_callbacks.extension_data) {
         return plugin_callbacks.extension_data(uri);
-    } 
-    else 
-    {
+    } else {
         return 0;
     }
 }
 
 
 
-static LV2_Descriptor plugin_descriptor = 
-{
+static LV2_Descriptor plugin_descriptor = {
     "http://lv2plug.in/plugins/eg-amp",
     plugin_instantiate_desc,
     plugin_connect_port_desc,
@@ -96,14 +76,10 @@ static LV2_Descriptor plugin_descriptor =
     plugin_extension_data_desc
 };
 
-LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor (uint32_t index)
-{
-    if (0 == index) 
-    {
+LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor (uint32_t index) {
+    if (0 == index) {
           return &plugin_descriptor;
-    }
-    else 
-    { 
+    } else { 
           return NULL;
     }
 }

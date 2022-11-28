@@ -64,8 +64,7 @@ typedef struct {basename}_port_{port.get_symbol()} {{
     f.write(f"""
      
 
-typedef struct {basename}_callbacks
-{{
+typedef struct {basename}_callbacks {{
     struct {basename}* (*const instantiate)({basename}_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
     void (*const connect_port)({basename}_t *instance, uint32_t port, void *data_location);
     void (*const activate)({basename}_t *instance);
@@ -94,62 +93,47 @@ typedef struct {basename}_callbacks
 #include <stdlib.h>
 #include <string.h>
     
-static void {basename}_connect_port_desc(LV2_Handle instance, uint32_t port, void *data_location)
-{{
-    if ({basename}_callbacks.connect_port) 
-    {{ 
+static void {basename}_connect_port_desc(LV2_Handle instance, uint32_t port, void *data_location) {{
+    if ({basename}_callbacks.connect_port) {{ 
         {basename}_callbacks.connect_port(({basename}_t *)instance, port, data_location); 
-    }} 
-    else 
-    {{
-        if (port < {plugin.get_num_ports()}) 
-        {{
+    }} else {{
+        if (port < {plugin.get_num_ports()}) {{
             (({basename}_t*)instance)->ports[port] = (float*)data_location;
         }}
     }}
 }}
 
-static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features)
-{{
+static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features) {{
     {basename}_t *instance = ({basename}_t*)malloc(sizeof(struct {basename}));
     memset(instance, 0,  sizeof(struct {basename}));
-    if ({basename}_callbacks.instantiate)
-    {{
+    if ({basename}_callbacks.instantiate) {{
         {basename}_callbacks.instantiate(instance, sample_rate, bundle_path, features);
     }}
     return (LV2_Handle)(instance);
 }}
 
-static void {basename}_cleanup_desc(LV2_Handle instance)
-{{
-    if ({basename}_callbacks.cleanup)
-    {{
+static void {basename}_cleanup_desc(LV2_Handle instance) {{
+    if ({basename}_callbacks.cleanup) {{
         {basename}_callbacks.cleanup(({basename}_t*)instance);
     }}
 
     free(instance);
 }}
 
-static void {basename}_activate_desc(LV2_Handle instance)
-{{
-    if ({basename}_callbacks.activate)
-    {{
+static void {basename}_activate_desc(LV2_Handle instance) {{
+    if ({basename}_callbacks.activate) {{
         {basename}_callbacks.activate(({basename}_t*)instance);
     }}
 }}
 
-static void {basename}_deactivate_desc(LV2_Handle instance)
-{{
-    if ({basename}_callbacks.deactivate)
-    {{
+static void {basename}_deactivate_desc(LV2_Handle instance) {{
+    if ({basename}_callbacks.deactivate) {{
         {basename}_callbacks.deactivate(({basename}_t*)instance);
     }}
 }}
 
-static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count)
-{{
-    if ({basename}_callbacks.run)
-    {{
+static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count) {{
+    if ({basename}_callbacks.run) {{
 """)
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
@@ -167,22 +151,17 @@ static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count)
     }}
 }}
 
-static const void *{basename}_extension_data_desc(const char *uri)
-{{
-    if ({basename}_callbacks.extension_data)
-    {{
+static const void *{basename}_extension_data_desc(const char *uri) {{
+    if ({basename}_callbacks.extension_data) {{
         return {basename}_callbacks.extension_data(uri);
-    }} 
-    else 
-    {{
+    }} else {{
         return 0;
     }}
 }}
 
 
 
-static LV2_Descriptor {basename}_descriptor = 
-{{
+static LV2_Descriptor {basename}_descriptor = {{
     "{plugin.get_uri()}",
     {basename}_instantiate_desc,
     {basename}_connect_port_desc,
@@ -193,14 +172,10 @@ static LV2_Descriptor {basename}_descriptor =
     {basename}_extension_data_desc
 }};
 
-LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor (uint32_t index)
-{{
-    if (0 == index) 
-    {{
+LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor (uint32_t index) {{
+    if (0 == index) {{
           return &{basename}_descriptor;
-    }}
-    else 
-    {{ 
+    }} else {{ 
           return NULL;
     }}
 }}

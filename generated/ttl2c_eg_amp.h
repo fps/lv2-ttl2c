@@ -31,8 +31,7 @@ typedef struct plugin_port_out {
 
      
 
-typedef struct plugin_callbacks
-{
+typedef struct plugin_callbacks {
     struct plugin* (*const instantiate)(plugin_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
     void (*const connect_port)(plugin_t *instance, uint32_t port, void *data_location);
     void (*const activate)(plugin_t *instance);
