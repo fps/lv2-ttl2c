@@ -34,7 +34,7 @@ static void run (
     for (uint32_t frame = 0; frame < nframes; ++frame) {
         // Each port type has a .data member which hold the connected data
         // location:
-        out.data[frame] = gain.data[0] * in.data[frame];
+        out.data[frame] = gain.data * in.data[frame];
     }
 }
 
@@ -89,7 +89,7 @@ static void run (
 ) {
     plugin_state_t *state = instance->state;
 
-    const float a = 1.0f - expf(-state->sampling_interval/t1.data[0]);
+    const float a = 1.0f - expf(-state->sampling_interval/t1.data);
     for (uint32_t frame = 0; frame < nframes; ++frame) {
         out.data[frame] = in.data[frame] * a + state->s * (1 - a);
         state->s = in.data[frame];
@@ -158,15 +158,15 @@ enum plugin_port_indices {
 };
 
 typedef struct plugin_port_t1 {
-    float const *data;
+    float const  data;
 } plugin_port_t1_t;
 
 typedef struct plugin_port_in {
-    float const *data;
+    float const * data;
 } plugin_port_in_t;
 
 typedef struct plugin_port_out {
-    float  *data;
+    float  * data;
 } plugin_port_out_t;
 
      
@@ -236,7 +236,7 @@ static void plugin_deactivate_desc(LV2_Handle instance) {
 
 static void plugin_run_desc(LV2_Handle instance, uint32_t sample_count) {
     if (plugin_callbacks.run) {
-        const struct plugin_port_t1 t1 = { .data = ((plugin_t*)instance)->ports[0] };
+        const struct plugin_port_t1 t1 = { .data = ((plugin_t*)instance)->ports[0][0] };
         const struct plugin_port_in in = { .data = ((plugin_t*)instance)->ports[1] };
         const struct plugin_port_out out = { .data = ((plugin_t*)instance)->ports[2] };
 

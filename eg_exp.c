@@ -31,7 +31,7 @@ static void run (
 ) {
     plugin_state_t *state = instance->state;
 
-    const float a = 1.0f - expf(-state->sampling_interval/t1.data[0]);
+    const float a = 1.0f - expf(-state->sampling_interval/t1.data);
     for (uint32_t frame = 0; frame < nframes; ++frame) {
         out.data[frame] = in.data[frame] * a + state->s * (1 - a);
         state->s = in.data[frame];
