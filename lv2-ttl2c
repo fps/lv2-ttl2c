@@ -58,7 +58,7 @@ enum {basename}_port_indices {{
         port = plugin.get_port_by_index(index)
         f.write(f"""
 typedef struct {basename}_port_{port.get_symbol()} {{
-    float {"const" if port.is_a(lilv.LILV_URI_INPUT_PORT) else ""} {"*" if port.is_a(lilv.LILV_URI_AUDIO_PORT) else ""} data;
+    float {"const" if port.is_a(lilv.LILV_URI_INPUT_PORT) else ""} {"*" if not port.is_a(lilv.LILV_URI_CONTROL_PORT) else ""} data;
 }} {basename}_port_{port.get_symbol()}_t;
 """)
 
