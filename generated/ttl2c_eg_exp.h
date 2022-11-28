@@ -18,15 +18,15 @@ enum plugin_port_indices {
 };
 
 typedef struct plugin_port_t1 {
-    float *data;
+    float const *data;
 } plugin_port_t1_t;
 
 typedef struct plugin_port_in {
-    float *data;
+    float const *data;
 } plugin_port_in_t;
 
 typedef struct plugin_port_out {
-    float *data;
+    float  *data;
 } plugin_port_out_t;
 
      
