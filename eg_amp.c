@@ -17,7 +17,7 @@ static void run (
 }
 
 // We want run() to be run ;)
-const plugin_callbacks_t plugin_callbacks = {
+static const plugin_callbacks_t plugin_callbacks = {
     .run = run
 };
 
