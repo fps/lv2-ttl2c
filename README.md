@@ -10,11 +10,11 @@ Generate useful C code from a LV2 plugin bundle's metadata
 optional arguments:
   -h, --help            show this help message and exit
   -b BUNDLE, --bundle BUNDLE
-                        the bundle directory to analyze
+                        the bundle directory to analyze (default: .)
   -o OUTPUT_DIRECTORY, --output-directory OUTPUT_DIRECTORY
-                        the output directory
+                        the output directory (default: .)
   -p PREFIX, --prefix PREFIX
-                        the prefix added to output filenames
+                        the prefix added to output filenames (default: ttl2c_)
 </pre>
 
 You write the turle (ttl) files describing the plugins in your bundle and the python script then generates some useful <code>#include</code>s for you. Below you see the code that's necessary to write when running the script on the amp-plugin example from the lv2 distribution (included here for reference and testing in the <code>lv2/</code> directory)
