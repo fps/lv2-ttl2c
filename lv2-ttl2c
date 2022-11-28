@@ -8,7 +8,8 @@ import os
 import pathlib
 
 argparser = argparse.ArgumentParser(
-    description = 'Generate useful C code from a LV2 plugin bundle\'s metadata')
+    description = 'Generate useful C code from a LV2 plugin bundle\'s metadata',
+    formatter_class = argparse.ArgumentDefaultsHelpFormatter)
 
 argparser.add_argument('-b', '--bundle', default='.', help='the bundle directory to analyze')
 argparser.add_argument('-o', '--output-directory', default='.', help='the output directory')
