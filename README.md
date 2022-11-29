@@ -148,7 +148,7 @@ typedef struct plugin_state plugin_state_t;
 
 typedef struct plugin {
     struct plugin_state *state;
-    float *ports[3];
+    void *ports[3];
 } plugin_t;
 
 enum plugin_port_indices {
@@ -158,18 +158,16 @@ enum plugin_port_indices {
 };
 
 typedef struct plugin_port_t1 {
-    float const  data;
+    float const data;
 } plugin_port_t1_t;
 
 typedef struct plugin_port_in {
-    float const * data;
+    float const *data;
 } plugin_port_in_t;
 
 typedef struct plugin_port_out {
-    float  * data;
+    float *data;
 } plugin_port_out_t;
-
-     
 
 typedef struct plugin_callbacks {
     struct plugin* (*const instantiate)(plugin_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
@@ -240,9 +238,9 @@ static void plugin_deactivate_desc(LV2_Handle instance) {
 
 static void plugin_run_desc(LV2_Handle instance, uint32_t sample_count) {
     if (plugin_callbacks.run) {
-        const struct plugin_port_t1 t1 = { .data = ((plugin_t*)instance)->ports[0][0] };
-        const struct plugin_port_in in = { .data = ((plugin_t*)instance)->ports[1] };
-        const struct plugin_port_out out = { .data = ((plugin_t*)instance)->ports[2] };
+        const struct plugin_port_t1 t1 = { .data = ((float*)((plugin_t*)instance)->ports[0])[0] };
+        const struct plugin_port_in in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
+        const struct plugin_port_out out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
 
         plugin_callbacks.run((plugin_t*)instance, sample_count, t1, in, out);
     }

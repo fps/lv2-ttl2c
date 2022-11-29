@@ -51,9 +51,9 @@ static void plugin_deactivate_desc(LV2_Handle instance) {
 
 static void plugin_run_desc(LV2_Handle instance, uint32_t sample_count) {
     if (plugin_callbacks.run) {
-        const struct plugin_port_t1 t1 = { .data = ((plugin_t*)instance)->ports[0][0] };
-        const struct plugin_port_in in = { .data = ((plugin_t*)instance)->ports[1] };
-        const struct plugin_port_out out = { .data = ((plugin_t*)instance)->ports[2] };
+        const struct plugin_port_t1 t1 = { .data = ((float*)((plugin_t*)instance)->ports[0])[0] };
+        const struct plugin_port_in in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
+        const struct plugin_port_out out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
 
         plugin_callbacks.run((plugin_t*)instance, sample_count, t1, in, out);
     }

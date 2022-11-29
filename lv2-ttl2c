@@ -40,7 +40,7 @@ typedef struct {basename}_state {basename}_state_t;
 
 typedef struct {basename} {{
     struct {basename}_state *state;
-    float *ports[{plugin.get_num_ports()}];
+    void *ports[{plugin.get_num_ports()}];
 }} {basename}_t;
 
 enum {basename}_port_indices {{
@@ -58,12 +58,11 @@ enum {basename}_port_indices {{
         port = plugin.get_port_by_index(index)
         f.write(f"""
 typedef struct {basename}_port_{port.get_symbol()} {{
-    float {"const" if port.is_a(lilv.LILV_URI_INPUT_PORT) else ""} {"*" if not port.is_a(lilv.LILV_URI_CONTROL_PORT) else ""} data;
+    {"float" if not port.is_a(lilv.LILV_URI_ATOM_PORT) else "LV2_Atom_Sequence"} {"const " if port.is_a(lilv.LILV_URI_INPUT_PORT) else ""}{"*" if not port.is_a(lilv.LILV_URI_CONTROL_PORT) else ""}data;
 }} {basename}_port_{port.get_symbol()}_t;
 """)
 
-    f.write(f"""
-     
+    f.write(f"""\
 
 typedef struct {basename}_callbacks {{
     struct {basename}* (*const instantiate)({basename}_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
@@ -143,7 +142,7 @@ static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count) {{
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
         f.write(f"""\
-        const struct {basename}_port_{port.get_symbol()} {port.get_symbol()} = {{ .data = (({basename}_t*)instance)->ports[{index}]{"[0]" if port.is_a(lilv.LILV_URI_CONTROL_PORT) else ""} }};
+        const struct {basename}_port_{port.get_symbol()} {port.get_symbol()} = {{ .data = (({"float" if not port.is_a(lilv.LILV_URI_ATOM_PORT) else "LV2_ATOM_SEQUENCE"}*)(({basename}_t*)instance)->ports[{index}]){"[0]" if port.is_a(lilv.LILV_URI_CONTROL_PORT) else ""} }};
 """)
     f.write(f"""\
 

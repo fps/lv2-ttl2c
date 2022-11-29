@@ -8,7 +8,7 @@ typedef struct plugin_state plugin_state_t;
 
 typedef struct plugin {
     struct plugin_state *state;
-    float *ports[3];
+    void *ports[3];
 } plugin_t;
 
 enum plugin_port_indices {
@@ -18,18 +18,16 @@ enum plugin_port_indices {
 };
 
 typedef struct plugin_port_t1 {
-    float const  data;
+    float const data;
 } plugin_port_t1_t;
 
 typedef struct plugin_port_in {
-    float const * data;
+    float const *data;
 } plugin_port_in_t;
 
 typedef struct plugin_port_out {
-    float  * data;
+    float *data;
 } plugin_port_out_t;
-
-     
 
 typedef struct plugin_callbacks {
     struct plugin* (*const instantiate)(plugin_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
