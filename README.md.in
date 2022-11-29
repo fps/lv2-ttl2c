@@ -2,6 +2,11 @@
 
 This repository contains a little python script to make writing an LV2 plugin a little less repetitive/painful.
 
+# Requirements:
+
+- Python 3
+- regexec, if you want to rebuild the documentation (README.md): https://github.com/fps/regexec
+
 <pre>
 [usage]
 </pre>
