@@ -133,7 +133,9 @@ test: plugins
 	LV2_PATH=${PWD}/lv2 valgrind lv2bench http://lv2plug.in/plugins/eg-amp
 	LV2_PATH=${PWD}/lv2 valgrind lv2bench http://lv2plug.in/plugins/eg-exp
 
-doc: README.md.in *.c
+doc: README.md
+
+README.md: README.md.in *.c makefile generated/*.c generated/*.h
 	cat README.md.in | regexec | regexec -e "\[usage\]" -c "./lv2-ttl2c -h" -n 1 > README.md
 
 ```
