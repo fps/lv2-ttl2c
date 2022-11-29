@@ -206,7 +206,11 @@ static void plugin_connect_port_desc(LV2_Handle instance, uint32_t port, void *d
 }
 
 static LV2_Handle plugin_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features) {
-    plugin_t *instance = (plugin_t*)malloc(sizeof(struct plugin));
+    plugin_t *instance = (plugin_t*)calloc(1, sizeof(struct plugin));
+    if (!instance) {
+        return NULL;
+    }
+
     memset(instance, 0,  sizeof(struct plugin));
     if (plugin_callbacks.instantiate) {
         plugin_callbacks.instantiate(instance, sample_rate, bundle_path, features);
