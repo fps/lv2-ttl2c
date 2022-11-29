@@ -118,12 +118,14 @@ Here is the makefile included with this project used to build and test the gener
 ```make
 .PHONY: test
 
+EXTRA_CFLAGS ?= -march=native -mcpu=native -O3 -save-temps
+
 all: plugins 
 
 plugins: *.c lv2/example.lv2/*.ttl
 	./lv2-ttl2c -b lv2/example.lv2 -o generated 
-	gcc eg_amp.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/amp.so
-	gcc eg_exp.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/exp.so
+	gcc ${EXTRA_CFLAGS} eg_amp.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/amp.so
+	gcc ${EXTRA_CFLAGS} eg_exp.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/exp.so
 
 test: plugins
 	LV2_PATH=${PWD}/lv2 lv2ls
