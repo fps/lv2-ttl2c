@@ -6,6 +6,7 @@ This repository contains a little python script to make writing an LV2 plugin a 
 
 - Python 3
 - regexec, if you want to rebuild the documentation (README.md): https://github.com/fps/regexec
+- valgrind and sord, if you want to run the tests
 
 <pre>
 usage: lv2-ttl2c [-h] [-b BUNDLE] [-o OUTPUT_DIRECTORY] [-p PREFIX]
