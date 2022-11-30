@@ -121,9 +121,10 @@ static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, 
         return NULL;
     }}
 
+    memset(instance, 0,  sizeof(struct {basename}));
+
     lv2_log_note(&instance->logger, "Instantiating a {plugin.get_uri()}\\n");
 
-    memset(instance, 0,  sizeof(struct {basename}));
     if ({basename}_callbacks.instantiate) {{
         {basename}_callbacks.instantiate(instance, sample_rate, bundle_path, features);
     }}
