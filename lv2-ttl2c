@@ -22,17 +22,23 @@ bundle_file_uri = pathlib.PurePath.as_uri(pathlib.Path(os.path.abspath(args.bund
 # print(os.path.abspath(args.bundle))
 # print(bundle_file_uri)
 
-w = lilv.World()
-w.load_bundle(bundle_file_uri)
+world = lilv.World()
+world.load_bundle(bundle_file_uri)
 
-for plugin in w.get_all_plugins():
+for plugin in world.get_all_plugins():
     file_basename = str(plugin.get_uri()).split("://")[1].split("/")[-1].replace("-","_").replace(".","_")    
     basename = "plugin"
     has_atom_ports = False
+    has_midi_ports = False
+    needs_urid_map = False
     for port_index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(port_index)
         if port.is_a(lilv.LILV_URI_ATOM_PORT):
             has_atom_ports = True
+            if port.supports_event(world.new_uri("http://lv2plug.in/ns/ext/midi#MidiEvent")):
+                has_midi_ports = True
+                needs_urid_map = True
+
     f = open(os.path.join(args.output_directory, f'{args.prefix}{file_basename}.h'), 'w')
     f.write(f"""\
 #ifndef {basename}_cb_hh
@@ -48,7 +54,8 @@ typedef struct {basename}_state {basename}_state_t;
 typedef struct {{
     {basename}_state_t *state;
     void *ports[{plugin.get_num_ports()}];
-    LV2_URID_Map *map;
+    {"LV2_URID_Map *map;" if has_midi_ports else "// No URID map"}
+    {"LV2_URID midi_MidiEvent;" if needs_urid_map else "// No Midi Events"}
     LV2_Log_Logger logger;
 }} {basename}_t;
 

@@ -166,7 +166,8 @@ typedef struct plugin_state plugin_state_t;
 typedef struct {
     plugin_state_t *state;
     void *ports[3];
-    LV2_URID_Map *map;
+    // No URID map
+    // No Midi Events
     LV2_Log_Logger logger;
 } plugin_t;
 
