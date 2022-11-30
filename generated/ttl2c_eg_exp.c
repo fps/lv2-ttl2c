@@ -7,17 +7,20 @@
 #include <string.h>
     
 static void plugin_connect_port_desc(LV2_Handle instance, uint32_t port, void *data_location) {
-    if (plugin_callbacks.connect_port) { 
-        plugin_callbacks.connect_port((plugin_t *)instance, port, data_location); 
+    plugin_t *tinstance = (plugin_t*) instance;
+
+    if (plugin_callbacks.connect_port) {
+        plugin_callbacks.connect_port(tinstance, port, data_location);
     } else {
         if (port < 3) {
-            ((plugin_t*)instance)->ports[port] = (float*)data_location;
+            (tinstance)->ports[port] = (float*)data_location;
         }
     }
 }
 
 static LV2_Handle plugin_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features) {
     plugin_t *instance = (plugin_t*)calloc(1, sizeof(struct plugin));
+
     if (!instance) {
         return NULL;
     }
@@ -43,24 +46,30 @@ static void plugin_cleanup_desc(LV2_Handle instance) {
 }
 
 static void plugin_activate_desc(LV2_Handle instance) {
+    plugin_t *tinstance = (plugin_t*) instance;
+
     if (plugin_callbacks.activate) {
-        plugin_callbacks.activate((plugin_t*)instance);
+        plugin_callbacks.activate(tinstance);
     }
 }
 
 static void plugin_deactivate_desc(LV2_Handle instance) {
+    plugin_t *tinstance = (plugin_t*) instance;
+
     if (plugin_callbacks.deactivate) {
-        plugin_callbacks.deactivate((plugin_t*)instance);
+        plugin_callbacks.deactivate(tinstance);
     }
 }
 
 static void plugin_run_desc(LV2_Handle instance, uint32_t sample_count) {
     if (plugin_callbacks.run) {
+        plugin_t *tinstance = (plugin_t*) instance;
+
         const struct plugin_port_t1 t1 = { .data = ((float*)((plugin_t*)instance)->ports[0])[0] };
         const struct plugin_port_in in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
         const struct plugin_port_out out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
 
-        plugin_callbacks.run((plugin_t*)instance, sample_count, t1, in, out);
+        plugin_callbacks.run(tinstance, sample_count, t1, in, out);
     }
 }
 
