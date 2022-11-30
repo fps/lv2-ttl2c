@@ -48,7 +48,7 @@ for plugin in world.get_all_plugins():
 #include <lv2/log/logger.h>
 #include <lv2/core/lv2_util.h>
 #include <stdint.h>
- 
+{"#include <lv2/atom/atom.h>" if has_atom_ports else ""}
 typedef struct {basename}_state {basename}_state_t;
 
 typedef struct {{
@@ -92,10 +92,11 @@ typedef struct {{
 
     f = open(os.path.join(args.output_directory, f'{args.prefix}{file_basename}.c'), 'w')
     f.write(f"""\
-#ifndef {basename}_hh
-#define {basename}_hh
+#ifndef {basename}_cc
+#define {basename}_cc
     
-  
+#include "{args.prefix}{file_basename}.h"
+
 #include <lv2.h>
 #include <stdlib.h>
 #include <string.h>
@@ -121,7 +122,11 @@ static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, 
 
     memset(instance, 0,  sizeof({basename}_t));
 
+    lv2_features_query(features, LV2_LOG__log, &instance->logger.log, false, NULL);
+
     lv2_log_note(&instance->logger, "Instantiating a {plugin.get_uri()}\\n");
+
+    {"if (!lv2_features_query(feature, LV2_URID__map, &instance->map, true, NULL)) { free(instance); return NULL; }" if needs_urid_map else ""}
 
     if ({basename}_callbacks.instantiate) {{
         instance = {basename}_callbacks.instantiate(instance, sample_rate, bundle_path, features);
