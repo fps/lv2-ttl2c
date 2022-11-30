@@ -15,11 +15,6 @@ typedef struct {
     LV2_Log_Logger logger;
 } plugin_t;
 
-enum plugin_port_indices {
-    gain = 0,
-    in = 1,
-    out = 2,
-};
 
 typedef struct {
     float const data;

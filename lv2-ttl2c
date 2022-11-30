@@ -52,15 +52,6 @@ typedef struct {{
     LV2_Log_Logger logger;
 }} {basename}_t;
 
-enum {basename}_port_indices {{
-""")
-
-    for index in range(plugin.get_num_ports()):
-        port = plugin.get_port_by_index(index)
-        f.write(f'    {port.get_symbol()} = {index},\n')
-
-    f.write(f"""\
-}};
 """)
     
     for index in range(plugin.get_num_ports()):
