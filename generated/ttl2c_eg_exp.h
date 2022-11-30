@@ -2,6 +2,8 @@
 #define plugin_cb_hh
 
 #include <lv2.h>
+#include <lv2/log/logger.h>
+#include <lv2/core/lv2_util.h>
 #include <stdint.h>
  
 typedef struct plugin_state plugin_state_t;
@@ -9,6 +11,8 @@ typedef struct plugin_state plugin_state_t;
 typedef struct plugin {
     struct plugin_state *state;
     void *ports[3];
+    LV2_URID_Map *map;
+    LV2_Log_Logger logger;
 } plugin_t;
 
 enum plugin_port_indices {

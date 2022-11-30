@@ -28,12 +28,19 @@ w.load_bundle(bundle_file_uri)
 for plugin in w.get_all_plugins():
     file_basename = str(plugin.get_uri()).split("://")[1].split("/")[-1].replace("-","_").replace(".","_")    
     basename = "plugin"
+    has_atom_ports = False
+    for port_index in range(plugin.get_num_ports()):
+        port = plugin.get_port_by_index(port_index)
+        if port.is_a(lilv.LILV_URI_ATOM_PORT):
+            has_atom_ports = True
     f = open(os.path.join(args.output_directory, f'{args.prefix}{file_basename}.h'), 'w')
     f.write(f"""\
 #ifndef {basename}_cb_hh
 #define {basename}_cb_hh
 
 #include <lv2.h>
+#include <lv2/log/logger.h>
+#include <lv2/core/lv2_util.h>
 #include <stdint.h>
  
 typedef struct {basename}_state {basename}_state_t;
@@ -41,6 +48,8 @@ typedef struct {basename}_state {basename}_state_t;
 typedef struct {basename} {{
     struct {basename}_state *state;
     void *ports[{plugin.get_num_ports()}];
+    LV2_URID_Map *map;
+    LV2_Log_Logger logger;
 }} {basename}_t;
 
 enum {basename}_port_indices {{
@@ -109,6 +118,8 @@ static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, 
         return NULL;
     }}
 
+    lv2_log_note(&instance->logger, "Instantiating a {plugin.get_uri()}\\n");
+
     memset(instance, 0,  sizeof(struct {basename}));
     if ({basename}_callbacks.instantiate) {{
         {basename}_callbacks.instantiate(instance, sample_rate, bundle_path, features);
@@ -117,11 +128,14 @@ static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, 
 }}
 
 static void {basename}_cleanup_desc(LV2_Handle instance) {{
+    {basename}_t *tinstance = ({basename}_t*) instance;
+
+    lv2_log_note(&tinstance->logger, "Cleaning up a {plugin.get_uri()}\\n");
     if ({basename}_callbacks.cleanup) {{
-        {basename}_callbacks.cleanup(({basename}_t*)instance);
+        {basename}_callbacks.cleanup(tinstance);
     }}
 
-    free(instance);
+    free(tinstance);
 }}
 
 static void {basename}_activate_desc(LV2_Handle instance) {{

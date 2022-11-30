@@ -22,6 +22,8 @@ static LV2_Handle plugin_instantiate_desc(const LV2_Descriptor *descriptor, doub
         return NULL;
     }
 
+    lv2_log_note(&instance->logger, "Instantiating a http://lv2plug.in/plugins/eg-exp\n");
+
     memset(instance, 0,  sizeof(struct plugin));
     if (plugin_callbacks.instantiate) {
         plugin_callbacks.instantiate(instance, sample_rate, bundle_path, features);
@@ -30,11 +32,14 @@ static LV2_Handle plugin_instantiate_desc(const LV2_Descriptor *descriptor, doub
 }
 
 static void plugin_cleanup_desc(LV2_Handle instance) {
+    plugin_t *tinstance = (plugin_t*) instance;
+
+    lv2_log_note(&tinstance->logger, "Cleaning up a http://lv2plug.in/plugins/eg-exp\n");
     if (plugin_callbacks.cleanup) {
-        plugin_callbacks.cleanup((plugin_t*)instance);
+        plugin_callbacks.cleanup(tinstance);
     }
 
-    free(instance);
+    free(tinstance);
 }
 
 static void plugin_activate_desc(LV2_Handle instance) {
