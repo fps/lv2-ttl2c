@@ -11,7 +11,10 @@ typedef struct plugin_state {
 
 // The instantiate callback already gets a plugin_t *instance pointer instead of an LV2_Handle
 // and only needs to perform additional initialisation.
-static plugin_t* instantiate(plugin_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features) {
+static plugin_t* instantiate(
+    plugin_t *instance, double sample_rate,
+    const char *bundle_path, const LV2_Feature *const *features
+) {
     instance->state = malloc(sizeof(plugin_state_t));
     memset(instance->state, 0, sizeof(plugin_state_t));
     instance->state->sampling_interval = 1.0f / sample_rate;
@@ -39,8 +42,8 @@ static void run (
 }
 
 static const plugin_callbacks_t plugin_callbacks = {
-    .run = run,
     .instantiate = instantiate,
+    .run = run,
     .cleanup = cleanup,
 };
 

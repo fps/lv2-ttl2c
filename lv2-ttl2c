@@ -45,8 +45,8 @@ for plugin in w.get_all_plugins():
  
 typedef struct {basename}_state {basename}_state_t;
 
-typedef struct {basename} {{
-    struct {basename}_state *state;
+typedef struct {{
+    {basename}_state_t *state;
     void *ports[{plugin.get_num_ports()}];
     LV2_URID_Map *map;
     LV2_Log_Logger logger;
@@ -66,15 +66,15 @@ enum {basename}_port_indices {{
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
         f.write(f"""
-typedef struct {basename}_port_{port.get_symbol()} {{
+typedef struct {{
     {"float" if not port.is_a(lilv.LILV_URI_ATOM_PORT) else "LV2_Atom_Sequence"} {"const " if port.is_a(lilv.LILV_URI_INPUT_PORT) else ""}{"*" if not port.is_a(lilv.LILV_URI_CONTROL_PORT) else ""}data;
 }} {basename}_port_{port.get_symbol()}_t;
 """)
 
     f.write(f"""\
 
-typedef struct {basename}_callbacks {{
-    struct {basename}* (*const instantiate)({basename}_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
+typedef struct {{
+    {basename}_t* (*const instantiate)({basename}_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
     void (*const connect_port)({basename}_t *instance, uint32_t port, void *data_location);
     void (*const activate)({basename}_t *instance);
     void (*const run)({basename}_t *instance, uint32_t sample_count""")
@@ -115,19 +115,20 @@ static void {basename}_connect_port_desc(LV2_Handle instance, uint32_t port, voi
 }}
 
 static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features) {{
-    {basename}_t *instance = ({basename}_t*)calloc(1, sizeof(struct {basename}));
+    {basename}_t *instance = ({basename}_t*)calloc(1, sizeof({basename}_t));
 
     if (!instance) {{
         return NULL;
     }}
 
-    memset(instance, 0,  sizeof(struct {basename}));
+    memset(instance, 0,  sizeof({basename}_t));
 
     lv2_log_note(&instance->logger, "Instantiating a {plugin.get_uri()}\\n");
 
     if ({basename}_callbacks.instantiate) {{
-        {basename}_callbacks.instantiate(instance, sample_rate, bundle_path, features);
+        instance = {basename}_callbacks.instantiate(instance, sample_rate, bundle_path, features);
     }}
+
     return (LV2_Handle)(instance);
 }}
 
@@ -135,6 +136,7 @@ static void {basename}_cleanup_desc(LV2_Handle instance) {{
     {basename}_t *tinstance = ({basename}_t*) instance;
 
     lv2_log_note(&tinstance->logger, "Cleaning up a {plugin.get_uri()}\\n");
+
     if ({basename}_callbacks.cleanup) {{
         {basename}_callbacks.cleanup(tinstance);
     }}
@@ -166,7 +168,7 @@ static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count) {{
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
         f.write(f"""\
-        const struct {basename}_port_{port.get_symbol()} {port.get_symbol()} = {{ .data = (({"float" if not port.is_a(lilv.LILV_URI_ATOM_PORT) else "LV2_ATOM_SEQUENCE"}*)(({basename}_t*)instance)->ports[{index}]){"[0]" if port.is_a(lilv.LILV_URI_CONTROL_PORT) else ""} }};
+        const {basename}_port_{port.get_symbol()}_t {port.get_symbol()} = {{ .data = (({"float" if not port.is_a(lilv.LILV_URI_ATOM_PORT) else "LV2_ATOM_SEQUENCE"}*)(({basename}_t*)instance)->ports[{index}]){"[0]" if port.is_a(lilv.LILV_URI_CONTROL_PORT) else ""} }};
 """)
     f.write(f"""\
 

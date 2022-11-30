@@ -8,8 +8,8 @@
  
 typedef struct plugin_state plugin_state_t;
 
-typedef struct plugin {
-    struct plugin_state *state;
+typedef struct {
+    plugin_state_t *state;
     void *ports[3];
     LV2_URID_Map *map;
     LV2_Log_Logger logger;
@@ -21,20 +21,20 @@ enum plugin_port_indices {
     out = 2,
 };
 
-typedef struct plugin_port_t1 {
+typedef struct {
     float const data;
 } plugin_port_t1_t;
 
-typedef struct plugin_port_in {
+typedef struct {
     float const *data;
 } plugin_port_in_t;
 
-typedef struct plugin_port_out {
+typedef struct {
     float *data;
 } plugin_port_out_t;
 
-typedef struct plugin_callbacks {
-    struct plugin* (*const instantiate)(plugin_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
+typedef struct {
+    plugin_t* (*const instantiate)(plugin_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
     void (*const connect_port)(plugin_t *instance, uint32_t port, void *data_location);
     void (*const activate)(plugin_t *instance);
     void (*const run)(plugin_t *instance, uint32_t sample_count, const plugin_port_t1_t t1, const plugin_port_in_t in, const plugin_port_out_t out);

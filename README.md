@@ -74,7 +74,10 @@ typedef struct plugin_state {
 
 // The instantiate callback already gets a plugin_t *instance pointer instead of an LV2_Handle
 // and only needs to perform additional initialisation.
-static plugin_t* instantiate(plugin_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features) {
+static plugin_t* instantiate(
+    plugin_t *instance, double sample_rate,
+    const char *bundle_path, const LV2_Feature *const *features
+) {
     instance->state = malloc(sizeof(plugin_state_t));
     memset(instance->state, 0, sizeof(plugin_state_t));
     instance->state->sampling_interval = 1.0f / sample_rate;
@@ -102,8 +105,8 @@ static void run (
 }
 
 static const plugin_callbacks_t plugin_callbacks = {
-    .run = run,
     .instantiate = instantiate,
+    .run = run,
     .cleanup = cleanup,
 };
 
@@ -157,8 +160,8 @@ For reference here are the two generated files for the second example:
  
 typedef struct plugin_state plugin_state_t;
 
-typedef struct plugin {
-    struct plugin_state *state;
+typedef struct {
+    plugin_state_t *state;
     void *ports[3];
     LV2_URID_Map *map;
     LV2_Log_Logger logger;
@@ -170,20 +173,20 @@ enum plugin_port_indices {
     out = 2,
 };
 
-typedef struct plugin_port_t1 {
+typedef struct {
     float const data;
 } plugin_port_t1_t;
 
-typedef struct plugin_port_in {
+typedef struct {
     float const *data;
 } plugin_port_in_t;
 
-typedef struct plugin_port_out {
+typedef struct {
     float *data;
 } plugin_port_out_t;
 
-typedef struct plugin_callbacks {
-    struct plugin* (*const instantiate)(plugin_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
+typedef struct {
+    plugin_t* (*const instantiate)(plugin_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
     void (*const connect_port)(plugin_t *instance, uint32_t port, void *data_location);
     void (*const activate)(plugin_t *instance);
     void (*const run)(plugin_t *instance, uint32_t sample_count, const plugin_port_t1_t t1, const plugin_port_in_t in, const plugin_port_out_t out);
@@ -219,19 +222,20 @@ static void plugin_connect_port_desc(LV2_Handle instance, uint32_t port, void *d
 }
 
 static LV2_Handle plugin_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features) {
-    plugin_t *instance = (plugin_t*)calloc(1, sizeof(struct plugin));
+    plugin_t *instance = (plugin_t*)calloc(1, sizeof(plugin_t));
 
     if (!instance) {
         return NULL;
     }
 
-    memset(instance, 0,  sizeof(struct plugin));
+    memset(instance, 0,  sizeof(plugin_t));
 
     lv2_log_note(&instance->logger, "Instantiating a http://lv2plug.in/plugins/eg-exp\n");
 
     if (plugin_callbacks.instantiate) {
-        plugin_callbacks.instantiate(instance, sample_rate, bundle_path, features);
+        instance = plugin_callbacks.instantiate(instance, sample_rate, bundle_path, features);
     }
+
     return (LV2_Handle)(instance);
 }
 
@@ -239,6 +243,7 @@ static void plugin_cleanup_desc(LV2_Handle instance) {
     plugin_t *tinstance = (plugin_t*) instance;
 
     lv2_log_note(&tinstance->logger, "Cleaning up a http://lv2plug.in/plugins/eg-exp\n");
+
     if (plugin_callbacks.cleanup) {
         plugin_callbacks.cleanup(tinstance);
     }
@@ -266,9 +271,9 @@ static void plugin_run_desc(LV2_Handle instance, uint32_t sample_count) {
     if (plugin_callbacks.run) {
         plugin_t *tinstance = (plugin_t*) instance;
 
-        const struct plugin_port_t1 t1 = { .data = ((float*)((plugin_t*)instance)->ports[0])[0] };
-        const struct plugin_port_in in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
-        const struct plugin_port_out out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
+        const plugin_port_t1_t t1 = { .data = ((float*)((plugin_t*)instance)->ports[0])[0] };
+        const plugin_port_in_t in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
+        const plugin_port_out_t out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
 
         plugin_callbacks.run(tinstance, sample_count, t1, in, out);
     }
