@@ -6,6 +6,7 @@
 #include <lv2/core/lv2_util.h>
 #include <stdint.h>
 
+
 typedef struct plugin_state plugin_state_t;
 
 typedef struct {

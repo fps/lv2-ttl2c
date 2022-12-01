@@ -29,11 +29,6 @@ static LV2_Handle plugin_instantiate_desc(const LV2_Descriptor *descriptor, doub
     memset(instance, 0,  sizeof(plugin_t));
 
     lv2_features_query(features, LV2_LOG__log, &instance->logger.log, false, NULL);
-
-    lv2_log_note(&instance->logger, "Instantiating a http://lv2plug.in/plugins/eg-amp\n");
-
-    
-
     if (plugin_callbacks.instantiate) {
         instance = plugin_callbacks.instantiate(instance, sample_rate, bundle_path, features);
     }

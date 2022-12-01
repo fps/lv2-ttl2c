@@ -132,12 +132,14 @@ plugins: *.c lv2/example.lv2/*.ttl
 	./lv2-ttl2c -b lv2/example.lv2 -o generated 
 	gcc ${EXTRA_CFLAGS} eg_amp.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/amp.so
 	gcc ${EXTRA_CFLAGS} eg_exp.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/exp.so
+	gcc ${EXTRA_CFLAGS} eg_atom.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/atom.so
 
 test: plugins
 	LV2_PATH=${PWD}/lv2 lv2ls
 	LV2_PATH=${PWD}/lv2 lv2info http://lv2plug.in/plugins/eg-amp
 	LV2_PATH=${PWD}/lv2 valgrind lv2bench http://lv2plug.in/plugins/eg-amp
 	LV2_PATH=${PWD}/lv2 valgrind lv2bench http://lv2plug.in/plugins/eg-exp
+	LV2_PATH=${PWD}/lv2 valgrind lv2bench http://lv2plug.in/plugins/eg-atom
 
 doc: README.md
 
@@ -160,7 +162,8 @@ For reference here are the two generated files for the second example:
 #include <lv2/log/logger.h>
 #include <lv2/core/lv2_util.h>
 #include <stdint.h>
- 
+
+
 typedef struct plugin_state plugin_state_t;
 
 typedef struct {
@@ -200,10 +203,11 @@ typedef struct {
 `ttl2c_eg_exp.c`:
 
 ```C
-#ifndef plugin_hh
-#define plugin_hh
+#ifndef plugin_cc
+#define plugin_cc
     
-  
+#include "ttl2c_eg_exp.h"
+
 #include <lv2.h>
 #include <stdlib.h>
 #include <string.h>
@@ -230,11 +234,6 @@ static LV2_Handle plugin_instantiate_desc(const LV2_Descriptor *descriptor, doub
     memset(instance, 0,  sizeof(plugin_t));
 
     lv2_features_query(features, LV2_LOG__log, &instance->logger.log, false, NULL);
-
-    lv2_log_note(&instance->logger, "Instantiating a http://lv2plug.in/plugins/eg-exp\n");
-
-    
-
     if (plugin_callbacks.instantiate) {
         instance = plugin_callbacks.instantiate(instance, sample_rate, bundle_path, features);
     }
