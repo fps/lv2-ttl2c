@@ -66,7 +66,7 @@ typedef struct {{
         port = plugin.get_port_by_index(index)
         f.write(f"""
 typedef struct {{
-    {"float" if not port.is_a(lilv.LILV_URI_ATOM_PORT) else "LV2_Atom_Sequence"} {"const " if port.is_a(lilv.LILV_URI_INPUT_PORT) else ""}{"*" if not port.is_a(lilv.LILV_URI_CONTROL_PORT) else ""}data;
+    {"float" if not port.is_a(lilv.LILV_URI_ATOM_PORT) else "LV2_Atom_Sequence"}{" const" if port.is_a(lilv.LILV_URI_INPUT_PORT) and not port.is_a(lilv.LILV_URI_CONTROL_PORT) else ""}{" *" if not port.is_a(lilv.LILV_URI_CONTROL_PORT) else ""} const data;
 }} {basename}_port_{port.get_symbol()}_t;
 """)
 

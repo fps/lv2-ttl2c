@@ -23,11 +23,11 @@ typedef struct {
 } plugin_port_t1_t;
 
 typedef struct {
-    float const *data;
+    float const * const data;
 } plugin_port_in_t;
 
 typedef struct {
-    float *data;
+    float * const data;
 } plugin_port_out_t;
 
 typedef struct {
