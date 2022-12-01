@@ -28,6 +28,9 @@ optional arguments:
 You write the turle (ttl) files describing the plugins in your bundle and the python script then generates some useful <code>#include</code>s for you. Below you see the code that's necessary to write when running the script on the amp-plugin example from the lv2 distribution (included here for reference and testing in the <code>lv2/</code> directory)
 
 ```C
+// This example is adapted from the eg-amp plugin shipped
+// with the LV2 distribution
+
 // Include the generated header
 #include "generated/ttl2c_eg_amp.h"
 
@@ -127,6 +130,9 @@ static const plugin_callbacks_t plugin_callbacks = {
 This example can be found in the file `eg_midigate.c`.
 
 ```C
+// This example is adapted from the eg-midigate plugin shipped
+// with the LV2 distribution
+
 #include "generated/ttl2c_eg_midigate.h"
 #include <stdlib.h>
 #include <string.h>

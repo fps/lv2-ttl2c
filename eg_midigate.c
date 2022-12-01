@@ -1,3 +1,6 @@
+// This example is adapted from the eg-midigate plugin shipped
+// with the LV2 distribution
+
 #include "generated/ttl2c_eg_midigate.h"
 #include <stdlib.h>
 #include <string.h>

@@ -1,3 +1,6 @@
+// This example is adapted from the eg-amp plugin shipped
+// with the LV2 distribution
+
 // Include the generated header
 #include "generated/ttl2c_eg_amp.h"
 
