@@ -1,7 +1,6 @@
 #include "generated/ttl2c_eg_midigate.h"
 #include <stdlib.h>
 #include <string.h>
-#include <lv2/midi/midi.h>
 
 typedef struct plugin_state {
     unsigned n_active_notes;

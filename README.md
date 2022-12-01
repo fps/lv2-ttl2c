@@ -130,7 +130,6 @@ This example can be found in the file `eg_midigate.c`.
 #include "generated/ttl2c_eg_midigate.h"
 #include <stdlib.h>
 #include <string.h>
-#include <lv2/midi/midi.h>
 
 typedef struct plugin_state {
     unsigned n_active_notes;
@@ -262,6 +261,7 @@ For reference here are the two generated files for the second example:
 #include <lv2/log/logger.h>
 #include <lv2/core/lv2_util.h>
 #include <stdint.h>
+
 
 
 typedef struct plugin_state plugin_state_t;

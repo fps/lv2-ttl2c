@@ -50,6 +50,7 @@ for plugin in world.get_all_plugins():
 #include <stdint.h>
 {"#include <lv2/atom/atom.h>" if has_atom_ports else ""}
 {"#include <lv2/atom/util.h>" if has_atom_ports else ""}
+{"#include <lv2/midi/midi.h>" if has_midi_ports else ""}
 typedef struct {basename}_state {basename}_state_t;
 
 typedef struct {{

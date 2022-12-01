@@ -7,6 +7,7 @@
 #include <stdint.h>
 
 
+
 typedef struct plugin_state plugin_state_t;
 
 typedef struct {
