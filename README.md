@@ -73,7 +73,7 @@ This example can be found in the file `eg_exp.c`.
 #include <stdlib.h>
 #include <string.h>
 
-// This is our state. The name of the type is struct basename_state
+// This is our state. The name of the type is struct plugin_state
 // (the generated files assume this precise name):
 typedef struct plugin_state {
     float s;
