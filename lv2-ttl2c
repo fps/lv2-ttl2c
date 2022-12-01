@@ -55,8 +55,8 @@ typedef struct {basename}_state {basename}_state_t;
 typedef struct {{
     {basename}_state_t *state;
     void *ports[{plugin.get_num_ports()}];
-    {"LV2_URID_Map *map;" if has_midi_ports else "// No URID map"}
-    {"LV2_URID midi_MidiEvent;" if needs_urid_map else "// No Midi Events"}
+    {"LV2_URID_Map *map;" if has_midi_ports else "// No URID map needed"}
+    {"LV2_URID midi_MidiEvent;" if needs_urid_map else "// No Midi Events needed"}
     LV2_Log_Logger logger;
 }} {basename}_t;
 
@@ -123,18 +123,20 @@ static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, 
 
     memset(instance, 0,  sizeof({basename}_t));
 
-    lv2_features_query(features, LV2_LOG__log, &instance->logger.log, false, NULL);""")
+    lv2_features_query(features, LV2_LOG__log, &instance->logger.log, false, NULL);
+    """)
 
     if needs_urid_map:
         f.write(f"""\
 
-    const char* missing;
-    if ((missing = lv2_features_query(features, LV2_URID__map, &instance->map, true, NULL))) {{
+    const char* missing =  lv2_features_query(features, LV2_URID__map, &instance->map, true, NULL);
+    if (missing) {{
         lv2_log_note(&instance->logger, "Missing feature: %s\\n", missing);
-        free(instance); return NULL;
+        free(instance);
+        return NULL;
     }}""")
 
-    f.write(f"""\
+    f.write(f"""
 
     if ({basename}_callbacks.instantiate) {{
         instance = {basename}_callbacks.instantiate(instance, sample_rate, bundle_path, features);

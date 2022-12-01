@@ -12,8 +12,8 @@ typedef struct plugin_state plugin_state_t;
 typedef struct {
     plugin_state_t *state;
     void *ports[3];
-    // No URID map
-    // No Midi Events
+    // No URID map needed
+    // No Midi Events needed
     LV2_Log_Logger logger;
 } plugin_t;
 
