@@ -110,7 +110,7 @@ static void {basename}_connect_port_desc(LV2_Handle instance, uint32_t port, voi
         {basename}_callbacks.connect_port(tinstance, port, data_location);
     }} else {{
         if (port < {plugin.get_num_ports()}) {{
-            (tinstance)->ports[port] = (float*)data_location;
+            (tinstance)->ports[port] = data_location;
         }}
     }}
 }}

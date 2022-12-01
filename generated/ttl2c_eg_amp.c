@@ -14,7 +14,7 @@ static void plugin_connect_port_desc(LV2_Handle instance, uint32_t port, void *d
         plugin_callbacks.connect_port(tinstance, port, data_location);
     } else {
         if (port < 3) {
-            (tinstance)->ports[port] = (float*)data_location;
+            (tinstance)->ports[port] = data_location;
         }
     }
 }
