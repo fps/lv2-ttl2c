@@ -47,8 +47,6 @@ static LV2_Handle plugin_instantiate_desc(const LV2_Descriptor *descriptor, doub
 static void plugin_cleanup_desc(LV2_Handle instance) {
     plugin_t *tinstance = (plugin_t*) instance;
 
-    lv2_log_note(&tinstance->logger, "Cleaning up a http://lv2plug.in/plugins/eg-midigate\n");
-
     if (plugin_callbacks.cleanup) {
         plugin_callbacks.cleanup(tinstance);
     }

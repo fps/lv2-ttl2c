@@ -149,8 +149,6 @@ static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, 
 static void {basename}_cleanup_desc(LV2_Handle instance) {{
     {basename}_t *tinstance = ({basename}_t*) instance;
 
-    lv2_log_note(&tinstance->logger, "Cleaning up a {plugin.get_uri()}\\n");
-
     if ({basename}_callbacks.cleanup) {{
         {basename}_callbacks.cleanup(tinstance);
     }}

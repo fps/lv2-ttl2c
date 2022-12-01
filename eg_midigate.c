@@ -78,9 +78,14 @@ static void run (
     write_output(instance, offset, nframes - offset, in, out);
 }
 
+static void cleanup(plugin_t *instance) {
+    free(instance->state);
+}
+
 static const plugin_callbacks_t plugin_callbacks = {
     .instantiate = instantiate,
     .run = run,
+    .cleanup = cleanup,
 };
 
 #include "generated/ttl2c_eg_midigate.c"

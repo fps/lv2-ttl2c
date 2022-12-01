@@ -210,9 +210,14 @@ static void run (
     write_output(instance, offset, nframes - offset, in, out);
 }
 
+static void cleanup(plugin_t *instance) {
+    free(instance->state);
+}
+
 static const plugin_callbacks_t plugin_callbacks = {
     .instantiate = instantiate,
     .run = run,
+    .cleanup = cleanup,
 };
 
 #include "generated/ttl2c_eg_midigate.c"
@@ -227,7 +232,8 @@ Here is the makefile included with this project used to build and test the gener
 ```make
 .PHONY: test
 
-EXTRA_CFLAGS ?= -march=native -mcpu=native -O3 -save-temps
+# EXTRA_CFLAGS ?= -march=native -mcpu=native -O3 -save-temps
+EXTRA_CFLAGS ?= -g -O1
 
 all: plugins 
 
@@ -242,9 +248,9 @@ test: plugins
 	LV2_PATH=${PWD}/lv2 lv2info http://lv2plug.in/plugins/eg-amp
 	LV2_PATH=${PWD}/lv2 lv2info http://lv2plug.in/plugins/eg-exp
 	LV2_PATH=${PWD}/lv2 lv2info http://lv2plug.in/plugins/eg-midigate
-	LV2_PATH=${PWD}/lv2 valgrind lv2bench http://lv2plug.in/plugins/eg-amp
-	LV2_PATH=${PWD}/lv2 valgrind lv2bench http://lv2plug.in/plugins/eg-exp
-	LV2_PATH=${PWD}/lv2 valgrind lv2bench http://lv2plug.in/plugins/eg-midigate
+	LV2_PATH=${PWD}/lv2 valgrind --leak-check=full lv2bench http://lv2plug.in/plugins/eg-amp
+	LV2_PATH=${PWD}/lv2 valgrind --leak-check=full lv2bench http://lv2plug.in/plugins/eg-exp
+	LV2_PATH=${PWD}/lv2 valgrind --leak-check=full lv2bench http://lv2plug.in/plugins/eg-midigate
 
 doc: README.md
 
