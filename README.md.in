@@ -34,10 +34,10 @@ This example can be found in the file `eg_exp.c`.
 
 # An example processing some MIDI
 
-This example can be found in the file `eg_atom.c`.
+This example can be found in the file `eg_midigate.c`.
 
 ```C
-[include eg_atom.c]
+[include eg_midigate.c]
 ```
 
 # Makefile

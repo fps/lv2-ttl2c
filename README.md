@@ -124,20 +124,19 @@ static const plugin_callbacks_t plugin_callbacks = {
 
 # An example processing some MIDI
 
-This example can be found in the file `eg_atom.c`.
+This example can be found in the file `eg_midigate.c`.
 
 ```C
-#include "generated/ttl2c_eg_atom.h"
+#include "generated/ttl2c_eg_midigate.h"
 
 static void run (
     plugin_t *instance, uint32_t nframes, 
-    const plugin_port_gain_t gain, 
-    const plugin_port_in_t in, 
-    const plugin_port_out_t out,
-    const plugin_port_atom_t atom
+    const plugin_port_control_t control,
+    const plugin_port_in_t in,
+    const plugin_port_out_t out
 ) {
     for (uint32_t frame = 0; frame < nframes; ++frame) {
-        out.data[frame] = gain.data * in.data[frame];
+        out.data[frame] = in.data[frame];
     }
 }
 
@@ -145,7 +144,7 @@ static const plugin_callbacks_t plugin_callbacks = {
     .run = run
 };
 
-#include "generated/ttl2c_eg_atom.c"
+#include "generated/ttl2c_eg_midigate.c"
 
 
 ```
@@ -165,14 +164,16 @@ plugins: *.c lv2/example.lv2/*.ttl
 	./lv2-ttl2c -b lv2/example.lv2 -o generated 
 	gcc ${EXTRA_CFLAGS} eg_amp.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/amp.so
 	gcc ${EXTRA_CFLAGS} eg_exp.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/exp.so
-	gcc ${EXTRA_CFLAGS} eg_atom.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/atom.so
+	gcc ${EXTRA_CFLAGS} eg_midigate.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/midigate.so
 
 test: plugins
 	LV2_PATH=${PWD}/lv2 lv2ls
 	LV2_PATH=${PWD}/lv2 lv2info http://lv2plug.in/plugins/eg-amp
+	LV2_PATH=${PWD}/lv2 lv2info http://lv2plug.in/plugins/eg-exp
+	LV2_PATH=${PWD}/lv2 lv2info http://lv2plug.in/plugins/eg-midigate
 	LV2_PATH=${PWD}/lv2 valgrind lv2bench http://lv2plug.in/plugins/eg-amp
 	LV2_PATH=${PWD}/lv2 valgrind lv2bench http://lv2plug.in/plugins/eg-exp
-	LV2_PATH=${PWD}/lv2 valgrind lv2bench http://lv2plug.in/plugins/eg-atom
+	LV2_PATH=${PWD}/lv2 valgrind lv2bench http://lv2plug.in/plugins/eg-midigate
 
 doc: README.md
 
