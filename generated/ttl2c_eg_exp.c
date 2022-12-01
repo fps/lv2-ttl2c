@@ -70,9 +70,9 @@ static void plugin_run_desc(LV2_Handle instance, uint32_t sample_count) {
     if (plugin_callbacks.run) {
         plugin_t *tinstance = (plugin_t*) instance;
 
-        const plugin_port_t1_t t1 = { .data = ((float*)((plugin_t*)instance)->ports[0])[0] };
-        const plugin_port_in_t in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
-        const plugin_port_out_t out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
+        plugin_port_t1_t const t1 = { .data = ((float*)((plugin_t*)instance)->ports[0])[0] };
+        plugin_port_in_t const in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
+        plugin_port_out_t const out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
 
         plugin_callbacks.run(tinstance, sample_count, t1, in, out);
     }
@@ -108,4 +108,4 @@ LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor (uint32_t index) {
 }
 
 
-#endif // plugin_hh    
+#endif // plugin_hh

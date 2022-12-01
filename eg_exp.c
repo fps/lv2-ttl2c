@@ -3,14 +3,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-// This is our state. The name of the type is struct basename_state (the generated files assume this precise name):
+// This is our state. The name of the type is struct basename_state
+// (the generated files assume this precise name):
 typedef struct plugin_state {
     float s;
     float sampling_interval;
 } plugin_state_t;
 
-// The instantiate callback already gets a plugin_t *instance pointer instead of an LV2_Handle
-// and only needs to perform additional initialisation.
+// The instantiate callback already gets a plugin_t *instance pointer
+// instead of an LV2_Handle and only needs to perform additional
+// initialisation.
 static plugin_t* instantiate(
     plugin_t *instance, double sample_rate,
     const char *bundle_path, const LV2_Feature *const *features
@@ -21,15 +23,16 @@ static plugin_t* instantiate(
     return instance;
 }
 
-// And similarly the cleanup callback only needs to care about the additional deinitialisation (inverse of instantiate).
+// And similarly the cleanup callback only needs to care about
+// the additional deinitialisation (inverse of instantiate).
 static void cleanup(plugin_t *instance) {
     free(instance->state);
 }
 
 static void run (
     plugin_t *instance, uint32_t nframes, 
-    const plugin_port_t1_t t1, 
-    const plugin_port_in_t in, 
+    const plugin_port_t1_t t1,
+    const plugin_port_in_t in,
     const plugin_port_out_t out
 ) {
     plugin_state_t *state = instance->state;

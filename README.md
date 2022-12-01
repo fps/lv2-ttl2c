@@ -32,7 +32,6 @@ You write the turle (ttl) files describing the plugins in your bundle and the py
 #include "generated/ttl2c_eg_amp.h"
 
 // Implement the one callback necessary. Note how there is one type per port.
-// (this reduces errors)
 static void run (
     plugin_t *instance, uint32_t nframes, 
     const plugin_port_gain_t gain, 
@@ -40,8 +39,8 @@ static void run (
     const plugin_port_out_t out
 ) {
     for (uint32_t frame = 0; frame < nframes; ++frame) {
-        // Each port type has a .data member which hold the connected data
-        // location:
+        // Each port type has a .data member which hold the
+        // connected data location:
         out.data[frame] = gain.data * in.data[frame];
     }
 }
@@ -71,14 +70,16 @@ This example can be found in the file `eg_exp.c`.
 #include <stdlib.h>
 #include <string.h>
 
-// This is our state. The name of the type is struct basename_state (the generated files assume this precise name):
+// This is our state. The name of the type is struct basename_state
+// (the generated files assume this precise name):
 typedef struct plugin_state {
     float s;
     float sampling_interval;
 } plugin_state_t;
 
-// The instantiate callback already gets a plugin_t *instance pointer instead of an LV2_Handle
-// and only needs to perform additional initialisation.
+// The instantiate callback already gets a plugin_t *instance pointer
+// instead of an LV2_Handle and only needs to perform additional
+// initialisation.
 static plugin_t* instantiate(
     plugin_t *instance, double sample_rate,
     const char *bundle_path, const LV2_Feature *const *features
@@ -89,15 +90,16 @@ static plugin_t* instantiate(
     return instance;
 }
 
-// And similarly the cleanup callback only needs to care about the additional deinitialisation (inverse of instantiate).
+// And similarly the cleanup callback only needs to care about
+// the additional deinitialisation (inverse of instantiate).
 static void cleanup(plugin_t *instance) {
     free(instance->state);
 }
 
 static void run (
     plugin_t *instance, uint32_t nframes, 
-    const plugin_port_t1_t t1, 
-    const plugin_port_in_t in, 
+    const plugin_port_t1_t t1,
+    const plugin_port_in_t in,
     const plugin_port_out_t out
 ) {
     plugin_state_t *state = instance->state;
@@ -125,11 +127,8 @@ static const plugin_callbacks_t plugin_callbacks = {
 This example can be found in the file `eg_atom.c`.
 
 ```C
-// Include the generated header
 #include "generated/ttl2c_eg_atom.h"
 
-// Implement the one callback necessary. Note how there is one type per port.
-// (this reduces errors)
 static void run (
     plugin_t *instance, uint32_t nframes, 
     const plugin_port_gain_t gain, 
@@ -138,18 +137,14 @@ static void run (
     const plugin_port_atom_t atom
 ) {
     for (uint32_t frame = 0; frame < nframes; ++frame) {
-        // Each port type has a .data member which hold the connected data
-        // location:
         out.data[frame] = gain.data * in.data[frame];
     }
 }
 
-// We want run() to be run ;)
 static const plugin_callbacks_t plugin_callbacks = {
     .run = run
 };
 
-// Include the generated C file
 #include "generated/ttl2c_eg_atom.c"
 
 
@@ -313,9 +308,9 @@ static void plugin_run_desc(LV2_Handle instance, uint32_t sample_count) {
     if (plugin_callbacks.run) {
         plugin_t *tinstance = (plugin_t*) instance;
 
-        const plugin_port_t1_t t1 = { .data = ((float*)((plugin_t*)instance)->ports[0])[0] };
-        const plugin_port_in_t in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
-        const plugin_port_out_t out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
+        plugin_port_t1_t const t1 = { .data = ((float*)((plugin_t*)instance)->ports[0])[0] };
+        plugin_port_in_t const in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
+        plugin_port_out_t const out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
 
         plugin_callbacks.run(tinstance, sample_count, t1, in, out);
     }
@@ -351,7 +346,8 @@ LV2_SYMBOL_EXPORT const LV2_Descriptor* lv2_descriptor (uint32_t index) {
 }
 
 
-#endif // plugin_hh    
+#endif // plugin_hh
+
 ```
 
 
