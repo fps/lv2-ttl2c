@@ -25,9 +25,9 @@ test: plugins
 	for n in $(PLUGINS); do LV2_PATH=${PWD}/lv2 lv2info http://lv2plug.in/plugins/eg-"$$n"; done
 	for n in $(PLUGINS); do LV2_PATH=${PWD}/lv2 valgrind --leak-check=full lv2bench http://lv2plug.in/plugins/eg-"$$n"; done
 
-doc: README.md
+doc: README.md 
 
-README.md: README.md.in *.c makefile generated/*.c generated/*.h
+README.md: README.md.in *.c makefile generated/done
 	cat README.md.in | regexec | regexec -e "\[usage\]" -c "./lv2-ttl2c -h" -n 1 > README.md
 
 clean:
