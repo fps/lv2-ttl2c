@@ -229,24 +229,25 @@ static const plugin_callbacks_t plugin_callbacks = {
 Here is the makefile included with this project used to build and test the generated source:
 
 ```make
-.PHONY: test clean
+.PHONY: test clean plugins
 
 # EXTRA_CFLAGS ?= -march=native -mcpu=native -O3 -Wall -Werror -pedantic
 EXTRA_CFLAGS ?= -g -O1 -Wall -Werror -pedantic
 
+LV2_TTL_PATH ?= /usr/lib/lv2
+
 all: plugins 
 
-plugins = amp exp midigate
+PLUGINS = amp exp midigate
+PLUGIN_LIBRARIES = $(PLUGINS:%=lv2/example.lv2/%.so)
+PLUGIN_URLS = $(PLUGINS:%=http://lv2plug.in/plugins/eg_%)
+PLUGIN_GENERATED_SOURCES = $(PLUGINS:%=generated/ttl2c_%.c)
+PLUGIN_GENERATED_HEADERS = $(PLUGINS:%=generated/ttl2c_%.c)
 
-plugins: lv2/example.lv2/amp.so
+plugins: $(PLUGIN_LIBRARIES)
 
-lv2/example.lv2/%.so: %.c generated/done ; gcc ${EXTRA_CFLAGS} $< -pedantic -Wall -Werror -shared -o $@
-
-lv2/example.lv2/done: generated/done *.c
-	# gcc ${EXTRA_CFLAGS} eg_amp.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/amp.so
-	# gcc ${EXTRA_CFLAGS} eg_exp.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/exp.so
-	# gcc ${EXTRA_CFLAGS} eg_midigate.c -pedantic -Wall -Werror -shared -o lv2/example.lv2/midigate.so
-	# touch lv2/example.lv2/done
+lv2/example.lv2/%.so: %.c generated/done
+	gcc ${EXTRA_CFLAGS} $< -pedantic -Wall -Werror -shared -o $@
 
 generated/done: lv2/example.lv2/*.ttl
 	./lv2-ttl2c -b lv2/example.lv2 -o generated 
@@ -254,12 +255,10 @@ generated/done: lv2/example.lv2/*.ttl
 
 test: plugins
 	LV2_PATH=${PWD}/lv2 lv2ls
-	LV2_PATH=${PWD}/lv2 lv2info http://lv2plug.in/plugins/eg-amp
-	LV2_PATH=${PWD}/lv2 lv2info http://lv2plug.in/plugins/eg-exp
-	LV2_PATH=${PWD}/lv2 lv2info http://lv2plug.in/plugins/eg-midigate
-	LV2_PATH=${PWD}/lv2 valgrind --leak-check=full lv2bench http://lv2plug.in/plugins/eg-amp
-	LV2_PATH=${PWD}/lv2 valgrind --leak-check=full lv2bench http://lv2plug.in/plugins/eg-exp
-	LV2_PATH=${PWD}/lv2 valgrind --leak-check=full lv2bench http://lv2plug.in/plugins/eg-midigate
+	for n in $(PLUGINS); do LV2_PATH=${PWD}/lv2 lv2info http://lv2plug.in/plugins/eg-"$$n"; done
+	for n in $(PLUGINS); do LV2_PATH=${PWD}/lv2 valgrind --leak-check=full lv2bench http://lv2plug.in/plugins/eg-"$$n"; done
+	sord_validate $(find -L $(LV2_TTL_PATH) -iname "*.ttl") $PWD/lv2/example.lv2/*.ttl 2>&1
+
 
 doc: README.md
 
