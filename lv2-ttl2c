@@ -103,7 +103,7 @@ typedef struct {{
 #include <stdlib.h>
 #include <string.h>
     
-static void {basename}_connect_port_desc(LV2_Handle instance, uint32_t port, void *data_location) {{
+static void {basename}_connect_port_desc (LV2_Handle instance, uint32_t port, void *data_location) {{
     {basename}_t *tinstance = ({basename}_t*) instance;
 
     if ({basename}_callbacks.connect_port) {{
@@ -115,7 +115,7 @@ static void {basename}_connect_port_desc(LV2_Handle instance, uint32_t port, voi
     }}
 }}
 
-static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features) {{
+static LV2_Handle {basename}_instantiate_desc (const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features) {{
     {basename}_t *instance = ({basename}_t*)calloc(1, sizeof({basename}_t));
 
     if (!instance) {{
@@ -130,7 +130,7 @@ static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, 
     if needs_urid_map:
         f.write(f"""\
 
-    const char* missing =  lv2_features_query(features, LV2_URID__map, &instance->map, true, NULL);
+    const char* missing =  lv2_features_query (features, LV2_URID__map, &instance->map, true, NULL);
     if (missing) {{
         lv2_log_note(&instance->logger, "Missing feature: %s\\n", missing);
         free(instance);
@@ -140,39 +140,39 @@ static LV2_Handle {basename}_instantiate_desc(const LV2_Descriptor *descriptor, 
     f.write(f"""
 
     if ({basename}_callbacks.instantiate) {{
-        instance = {basename}_callbacks.instantiate(instance, sample_rate, bundle_path, features);
+        instance = {basename}_callbacks.instantiate (instance, sample_rate, bundle_path, features);
     }}
 
     return (LV2_Handle)(instance);
 }}
 
-static void {basename}_cleanup_desc(LV2_Handle instance) {{
+static void {basename}_cleanup_desc (LV2_Handle instance) {{
     {basename}_t *tinstance = ({basename}_t*) instance;
 
     if ({basename}_callbacks.cleanup) {{
-        {basename}_callbacks.cleanup(tinstance);
+        {basename}_callbacks.cleanup (tinstance);
     }}
 
     free(tinstance);
 }}
 
-static void {basename}_activate_desc(LV2_Handle instance) {{
+static void {basename}_activate_desc (LV2_Handle instance) {{
     {basename}_t *tinstance = ({basename}_t*) instance;
 
     if ({basename}_callbacks.activate) {{
-        {basename}_callbacks.activate(tinstance);
+        {basename}_callbacks.activate (tinstance);
     }}
 }}
 
-static void {basename}_deactivate_desc(LV2_Handle instance) {{
+static void {basename}_deactivate_desc (LV2_Handle instance) {{
     {basename}_t *tinstance = ({basename}_t*) instance;
 
     if ({basename}_callbacks.deactivate) {{
-        {basename}_callbacks.deactivate(tinstance);
+        {basename}_callbacks.deactivate (tinstance);
     }}
 }}
 
-static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count) {{
+static void {basename}_run_desc (LV2_Handle instance, uint32_t sample_count) {{
     if ({basename}_callbacks.run) {{
         {basename}_t *tinstance = ({basename}_t*) instance;
 
@@ -184,7 +184,7 @@ static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count) {{
 """)
     f.write(f"""\
 
-        {basename}_callbacks.run(tinstance, sample_count""")
+        {basename}_callbacks.run (tinstance, sample_count""")
     for index in range(plugin.get_num_ports()):
         port = plugin.get_port_by_index(index)
         f.write(f', {port.get_symbol()}')
@@ -193,9 +193,9 @@ static void {basename}_run_desc(LV2_Handle instance, uint32_t sample_count) {{
     }}
 }}
 
-static const void *{basename}_extension_data_desc(const char *uri) {{
+static const void *{basename}_extension_data_desc (const char *uri) {{
     if ({basename}_callbacks.extension_data) {{
-        return {basename}_callbacks.extension_data(uri);
+        return {basename}_callbacks.extension_data (uri);
     }} else {{
         return 0;
     }}

@@ -13,7 +13,7 @@ typedef struct plugin_state {
 // The instantiate callback already gets a plugin_t *instance pointer
 // instead of an LV2_Handle and only needs to perform additional
 // initialisation.
-static plugin_t* instantiate(
+static plugin_t* instantiate (
     plugin_t *instance, double sample_rate,
     const char *bundle_path, const LV2_Feature *const *features
 ) {
@@ -25,7 +25,7 @@ static plugin_t* instantiate(
 
 // And similarly the cleanup callback only needs to care about
 // the additional deinitialisation (inverse of instantiate).
-static void cleanup(plugin_t *instance) {
+static void cleanup (plugin_t *instance) {
     free(instance->state);
 }
 

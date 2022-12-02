@@ -9,7 +9,7 @@ typedef struct plugin_state {
     unsigned program; // 0 = normal, 1 = inverted
 } plugin_state_t;
 
-static plugin_t* instantiate(
+static plugin_t* instantiate (
     plugin_t *instance, double sample_rate,
     const char *bundle_path, const LV2_Feature *const *features
 ) {
@@ -18,7 +18,7 @@ static plugin_t* instantiate(
     return instance;
 }
 
-static void write_output(
+static void write_output (
     plugin_t* self, uint32_t offset, uint32_t len,
     const plugin_port_in_t in,
     const plugin_port_out_t out
