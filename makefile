@@ -1,4 +1,4 @@
-.PHONY: test clean plugins
+.PHONY: test clean all
 
 # EXTRA_CFLAGS ?= -march=native -mcpu=native -O3 -Wall -Werror -pedantic
 EXTRA_CFLAGS ?= -g -O1 -Wall -Werror -pedantic
@@ -23,11 +23,10 @@ generated/done: lv2/example.lv2/*.ttl
 	touch generated/done
 
 test: plugins
+	sord_validate $$(find -L ${LV2_TTL_PATH} -iname "*.ttl") ${PWD}/lv2/example.lv2/*.ttl 2>&1
 	LV2_PATH=${PWD}/lv2 lv2ls
 	for n in $(PLUGINS); do LV2_PATH=${PWD}/lv2 lv2info http://lv2plug.in/plugins/eg-"$$n"; done
 	for n in $(PLUGINS); do LV2_PATH=${PWD}/lv2 valgrind --leak-check=full lv2bench http://lv2plug.in/plugins/eg-"$$n"; done
-	sord_validate $(find -L $(LV2_TTL_PATH) -iname "*.ttl") $PWD/lv2/example.lv2/*.ttl 2>&1
-
 
 doc: README.md
 
