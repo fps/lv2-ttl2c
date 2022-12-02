@@ -232,7 +232,7 @@ Here is the makefile included with this project used to build and test the gener
 .PHONY: test clean all
 
 # EXTRA_CFLAGS ?= -march=native -mcpu=native -O3 -Wall -Werror -pedantic
-EXTRA_CFLAGS ?= -g -O1 -Wall -Werror -pedantic
+EXTRA_CFLAGS ?= -g -O1 -Wall -Werror -pedantic -fPIC
 
 LV2_TTL_PATH ?= /usr/lib/lv2
 
@@ -243,8 +243,8 @@ PLUGIN_LIBRARIES = $(PLUGINS:%=lv2/example.lv2/%.so)
 
 plugins: $(PLUGIN_LIBRARIES)
 
-lv2/example.lv2/%.so: %.c generated/done
-	gcc ${EXTRA_CFLAGS} $< -pedantic -Wall -Werror -shared -o $@
+lv2/example.lv2/%.so: %.c generated/done makefile
+	gcc ${EXTRA_CFLAGS} $< -shared -o $@
 
 generated/done: lv2/example.lv2/*.ttl
 	./lv2-ttl2c -b lv2/example.lv2 -o generated 
