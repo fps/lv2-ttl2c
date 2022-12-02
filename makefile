@@ -9,9 +9,6 @@ all: plugins
 
 PLUGINS = amp exp midigate
 PLUGIN_LIBRARIES = $(PLUGINS:%=lv2/example.lv2/%.so)
-PLUGIN_URLS = $(PLUGINS:%=http://lv2plug.in/plugins/eg_%)
-PLUGIN_GENERATED_SOURCES = $(PLUGINS:%=generated/ttl2c_%.c)
-PLUGIN_GENERATED_HEADERS = $(PLUGINS:%=generated/ttl2c_%.c)
 
 plugins: $(PLUGIN_LIBRARIES)
 
