@@ -1,2 +1,2 @@
-include templates/*.c
-include templates/*.h
+include lv2-ttl2c/templates/*.c
+include lv2-ttl2c/templates/*.h
