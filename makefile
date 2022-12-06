@@ -16,7 +16,7 @@ lv2/example.lv2/%.so: %.c generated/done makefile
 	gcc ${EXTRA_CFLAGS} $< -shared -o $@
 
 generated/done: lv2/example.lv2/*.ttl lv2-ttl2c
-	./lv2-ttl2c -b lv2/example.lv2 -o generated 
+	./lv2-ttl2c/bin/lv2-ttl2c -b lv2/example.lv2 -o generated 
 	touch generated/done
 
 test: plugins
