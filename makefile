@@ -28,7 +28,7 @@ test: plugins
 doc: README.md 
 
 README.md: README.md.in *.c makefile generated/done
-	cat README.md.in | regexec | regexec -e "\[usage\]" -c "./lv2-ttl2c -h" -n 1 > README.md
+	cat README.md.in | regexec | regexec -e "\[usage\]" -c "./lv2-ttl2c/bin/lv2-ttl2c -h" -n 1 > README.md
 
 clean:
 	rm -f lv2/example.lv2/*.so generated/*.h generated/*.c generated/done lv2/example.lv2/done
