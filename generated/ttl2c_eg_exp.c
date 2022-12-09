@@ -1,7 +1,7 @@
 #ifndef plugin_cc
 #define plugin_cc
     
-#include "ttl2c_eg_exp.h"
+#include "ttl2c_eg_midigate.h"
 
 #include <lv2.h>
 #include <stdlib.h>
@@ -29,7 +29,7 @@ static LV2_Handle plugin_instantiate_desc (const LV2_Descriptor *descriptor, dou
     memset(instance, 0,  sizeof(plugin_t));
 
     lv2_features_query(features, LV2_LOG__log, &instance->logger.log, false, NULL);
-    
+
 
     if (plugin_callbacks.instantiate) {
         instance = plugin_callbacks.instantiate (instance, sample_rate, bundle_path, features);
@@ -69,9 +69,23 @@ static void plugin_run_desc (LV2_Handle instance, uint32_t sample_count) {
         plugin_t *tinstance = (plugin_t*) instance;
 
         plugin_port_t1_t const t1 = { .data = ((float*)((plugin_t*)instance)->ports[0])[0] };
+        /*
+        plugin_port_control_t const control = { .data = ((LV2_Atom_Sequence*)((plugin_t*)instance)->ports[0]) };
         plugin_port_in_t const in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
         plugin_port_out_t const out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
-
+        */
+        plugin_port_in_t const in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
+        /*
+        plugin_port_control_t const control = { .data = ((LV2_Atom_Sequence*)((plugin_t*)instance)->ports[0]) };
+        plugin_port_in_t const in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
+        plugin_port_out_t const out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
+        */
+        plugin_port_out_t const out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
+        /*
+        plugin_port_control_t const control = { .data = ((LV2_Atom_Sequence*)((plugin_t*)instance)->ports[0]) };
+        plugin_port_in_t const in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
+        plugin_port_out_t const out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
+        */
         plugin_callbacks.run (tinstance, sample_count, t1, in, out);
     }
 }
@@ -87,7 +101,7 @@ static const void *plugin_extension_data_desc (const char *uri) {
 
 
 static LV2_Descriptor plugin_descriptor = {
-    "http://lv2plug.in/plugins/eg-exp",
+    "http://lv2plug.in/plugins/eg-midigate",
     plugin_instantiate_desc,
     plugin_connect_port_desc,
     plugin_activate_desc,

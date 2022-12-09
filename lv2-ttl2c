@@ -42,6 +42,7 @@ for plugin in world.get_all_plugins():
         port_data['is_control_port'] = port.is_a(lilv.LILV_URI_CONTROL_PORT)
         port_data['is_input_port'] = port.is_a(lilv.LILV_URI_INPUT_PORT)
         port_data['symbol'] = port.get_symbol()
+        port_data['index'] = port_index
         if port.is_a(lilv.LILV_URI_ATOM_PORT):
             port_data['is_atom_port'] = True
             plugin_data['has_atom_ports'] = True
@@ -50,13 +51,14 @@ for plugin in world.get_all_plugins():
                 plugin_data['needs_urid_map'] = True
         plugin_data['ports'].append(port_data)
 
-    print(plugin_data)
     template = lv2_ttl2c.environment.get_template('plugin.h')
-
     rendered = template.render(plugin_data)
-    # print(rendered)
-
     open(os.path.join(args.output_directory, f'{args.prefix}{file_basename}.h'), 'w').write(rendered)
+
+    template = lv2_ttl2c.environment.get_template('plugin.c')
+    rendered = template.render(plugin_data)
+    open(os.path.join(args.output_directory, f'{args.prefix}{file_basename}.c'), 'w').write(rendered)
+
     pass
 
 #     f.write(f"""\
