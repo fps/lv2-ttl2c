@@ -13,30 +13,27 @@ typedef struct plugin_state plugin_state_t;
 
 typedef struct {
     plugin_state_t *state;
-    void *ports[3];
+    void *ports[{{ ports|length }}];
+{% if needs_urid_map %}
     LV2_URID_Map *map;
+{% endif %}
+{% if has_midi_ports %}
     LV2_URID midi_MidiEvent;
+{% endif %}
     LV2_Log_Logger logger;
 } plugin_t;
 
-
+{% for port in ports %}
 typedef struct {
-    LV2_Atom_Sequence const * const data;
-} plugin_port_control_t;
+    {% if port.is_atom_port %}LV2_Atom_Sequence {% else %}float {% endif %}{% if port.is_input_port %}const {% endif %}{% if not port.is_control_port%}* const {% endif %}data;
+} plugin_port_{{ port.symbol }}_t;
 
-typedef struct {
-    float const * const data;
-} plugin_port_in_t;
-
-typedef struct {
-    float * const data;
-} plugin_port_out_t;
-
+{% endfor %}
 typedef struct {
     plugin_t* (*const instantiate)(plugin_t *instance, double sample_rate, const char *bundle_path, const LV2_Feature *const *features);
     void (*const connect_port)(plugin_t *instance, uint32_t port, void *data_location);
     void (*const activate)(plugin_t *instance);
-    void (*const run)(plugin_t *instance, uint32_t sample_count, const plugin_port_control_t control, const plugin_port_in_t in, const plugin_port_out_t out);
+    void (*const run)(plugin_t *instance, uint32_t sample_count{% for port in ports %}, plugin_port_{{ port.symbol }}_t {{ port.symbol }}{% endfor %});
     void (*const deactivate)(plugin_t *instance);
     void (*const cleanup)(plugin_t *instance);
     const void *(*const extension_data)(const char *uri);
