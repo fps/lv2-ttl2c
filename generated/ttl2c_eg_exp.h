@@ -1,13 +1,16 @@
-#ifndef plugin_cb_hh
-#define plugin_cb_hh
+#ifndef ttl2c_plugin_hh
+#define ttl2c_plugin_hh
 
 #include <lv2.h>
 #include <lv2/log/logger.h>
 #include <lv2/core/lv2_util.h>
-#include <stdint.h>
 #include <lv2/atom/atom.h>
 #include <lv2/atom/util.h>
 #include <lv2/midi/midi.h>
+
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct plugin_state plugin_state_t;
 

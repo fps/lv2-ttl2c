@@ -1,11 +1,5 @@
-#ifndef plugin_cc
-#define plugin_cc
-    
-#include "ttl2c_eg_midigate.h"
-
-#include <lv2.h>
-#include <stdlib.h>
-#include <string.h>
+#ifndef ttl2c_plugin_cc
+#define ttl2c_plugin_cc
     
 static void plugin_connect_port_desc (LV2_Handle instance, uint32_t port, void *data_location) {
     plugin_t *tinstance = (plugin_t*) instance;
@@ -89,8 +83,6 @@ static const void *plugin_extension_data_desc (const char *uri) {
         return 0;
     }
 }
-
-
 
 static LV2_Descriptor plugin_descriptor = {
     "http://lv2plug.in/plugins/eg-midigate",
