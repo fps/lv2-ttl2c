@@ -79,6 +79,7 @@ static void plugin_run_desc (LV2_Handle instance, uint32_t sample_count) {
 {% for port in ports %}
         plugin_port_{{ port.symbol }}_t const {{ port.symbol }} = { .data = (({% if port.is_atom_port %}LV2_Atom_Sequence{% else %}float{% endif %}*)((plugin_t*)instance)->ports[{{ port.index }}]){% if port.is_control_port %}[0]{% endif %} };
 {% endfor %}
+
         plugin_callbacks.run (tinstance, sample_count{% for port in ports %}, {{ port.symbol }}{% endfor %});
     }
 }

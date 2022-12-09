@@ -71,6 +71,7 @@ static void plugin_run_desc (LV2_Handle instance, uint32_t sample_count) {
         plugin_port_t1_t const t1 = { .data = ((float*)((plugin_t*)instance)->ports[0])[0] };
         plugin_port_in_t const in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
         plugin_port_out_t const out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
+
         plugin_callbacks.run (tinstance, sample_count, t1, in, out);
     }
 }
