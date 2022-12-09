@@ -36,19 +36,23 @@ for plugin in world.get_all_plugins():
     plugin_data['ports'] = []
 
     for port_index in range(plugin.get_num_ports()):
+        port = plugin.get_port_by_index(port_index)
+
         port_data = {}
         port_data['is_atom_port'] = False
-        port = plugin.get_port_by_index(port_index)
         port_data['is_control_port'] = port.is_a(lilv.LILV_URI_CONTROL_PORT)
         port_data['is_input_port'] = port.is_a(lilv.LILV_URI_INPUT_PORT)
         port_data['symbol'] = port.get_symbol()
         port_data['index'] = port_index
+
         if port.is_a(lilv.LILV_URI_ATOM_PORT):
             port_data['is_atom_port'] = True
             plugin_data['has_atom_ports'] = True
+
             if port.supports_event(world.new_uri("http://lv2plug.in/ns/ext/midi#MidiEvent")):
                 plugin_data['has_midi_ports'] = True
                 plugin_data['needs_urid_map'] = True
+
         plugin_data['ports'].append(port_data)
 
     template = lv2_ttl2c.environment.get_template('plugin.h')
