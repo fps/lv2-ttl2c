@@ -30,6 +30,7 @@ for plugin in world.get_all_plugins():
     basename = "plugin"
 
     plugin_data = {};
+    plugin_data['uri'] = plugin.get_uri()
     plugin_data['has_atom_ports'] = False
     plugin_data['has_midi_ports'] = False
     plugin_data['needs_urid_map'] = False

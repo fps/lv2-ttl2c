@@ -69,23 +69,8 @@ static void plugin_run_desc (LV2_Handle instance, uint32_t sample_count) {
         plugin_t *tinstance = (plugin_t*) instance;
 
         plugin_port_t1_t const t1 = { .data = ((float*)((plugin_t*)instance)->ports[0])[0] };
-        /*
-        plugin_port_control_t const control = { .data = ((LV2_Atom_Sequence*)((plugin_t*)instance)->ports[0]) };
         plugin_port_in_t const in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
         plugin_port_out_t const out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
-        */
-        plugin_port_in_t const in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
-        /*
-        plugin_port_control_t const control = { .data = ((LV2_Atom_Sequence*)((plugin_t*)instance)->ports[0]) };
-        plugin_port_in_t const in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
-        plugin_port_out_t const out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
-        */
-        plugin_port_out_t const out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
-        /*
-        plugin_port_control_t const control = { .data = ((LV2_Atom_Sequence*)((plugin_t*)instance)->ports[0]) };
-        plugin_port_in_t const in = { .data = ((float*)((plugin_t*)instance)->ports[1]) };
-        plugin_port_out_t const out = { .data = ((float*)((plugin_t*)instance)->ports[2]) };
-        */
         plugin_callbacks.run (tinstance, sample_count, t1, in, out);
     }
 }
@@ -101,7 +86,7 @@ static const void *plugin_extension_data_desc (const char *uri) {
 
 
 static LV2_Descriptor plugin_descriptor = {
-    "http://lv2plug.in/plugins/eg-midigate",
+    "http://lv2plug.in/plugins/eg-exp",
     plugin_instantiate_desc,
     plugin_connect_port_desc,
     plugin_activate_desc,
