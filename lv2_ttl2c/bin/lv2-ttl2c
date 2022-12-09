@@ -7,6 +7,8 @@ import pprint
 import os
 import pathlib
 
+import lv2_ttl2c
+
 argparser = argparse.ArgumentParser(
     description = 'Generate useful C code from a LV2 plugin bundle\'s metadata',
     formatter_class = argparse.ArgumentDefaultsHelpFormatter)
@@ -22,7 +24,6 @@ bundle_file_uri = pathlib.PurePath.as_uri(pathlib.Path(os.path.abspath(args.bund
 # print(os.path.abspath(args.bundle))
 # print(bundle_file_uri)
 
-template_header = open(os.path.dirname(__file__) + '/../templates/plugin.h', 'r').read()
 
 world = lilv.World()
 world.load_bundle(bundle_file_uri)
