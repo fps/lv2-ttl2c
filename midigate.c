@@ -25,8 +25,9 @@ static void write_output (
 ) {
     plugin_state_t *state = self->state;
 
-    const bool active = (state->program == 0) ? (state->n_active_notes > 0)
-                                           : (state->n_active_notes == 0);
+    const bool active =
+        (state->program == 0) ? (state->n_active_notes > 0) : (state->n_active_notes == 0);
+
     if (active) {
         memcpy(out.data + offset, in.data + offset, len * sizeof(float));
     } else {
