@@ -255,7 +255,7 @@ test: plugins
 	lv2_validate ${PWD}/lv2/example.lv2/*.ttl 2>&1
 	LV2_PATH=${PWD}/lv2 lv2ls
 	for n in $(PLUGINS); do LV2_PATH=${PWD}/lv2 lv2info http://lv2plug.in/plugins/eg-"$$n"; done
-	for n in $(PLUGINS); do LV2_PATH=${PWD}/lv2 valgrind --leak-check=full lv2bench http://lv2plug.in/plugins/eg-"$$n"; done
+	for n in $(PLUGINS); do LV2_PATH=${PWD}/lv2 valgrind --leak-check=full --show-leak-kinds=all lv2bench http://lv2plug.in/plugins/eg-"$$n"; done
 
 doc: README.md 
 
