@@ -14,7 +14,7 @@ static void plugin_connect_port_desc (LV2_Handle instance, uint32_t port, void *
 }
 
 static LV2_Handle plugin_instantiate_desc (const LV2_Descriptor *descriptor, double sample_rate, const char *bundle_path, const LV2_Feature *const *features) {
-    plugin_t *instance = (plugin_t*)calloc(1, sizeof(plugin_t));
+    plugin_t *instance = (plugin_t*)malloc(sizeof(plugin_t));
 
     if (!instance) {
         return NULL;
