@@ -15,7 +15,7 @@ usage: lv2-ttl2c [-h] [-b BUNDLE] [-o OUTPUT_DIRECTORY] [-p PREFIX]
 
 Generate useful C code from a LV2 plugin bundle's metadata
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -b BUNDLE, --bundle BUNDLE
                         the bundle directory to analyze (default: .)
